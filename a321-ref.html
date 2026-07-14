@@ -8,199 +8,86 @@
 <meta name="theme-color" content="#0a0e14">
 <title>A321 REF</title>
 <style>
-:root {
-  --bg: #0a0e14;
-  --surface: #131820;
-  --surface2: #1a2230;
-  --border: #1e2a3a;
-  --text: #e0e6ed;
-  --muted: #6b7a8d;
-  --accent: #00d4aa;
-  --accent-dim: rgba(0,212,170,0.12);
-  --blue: #3b82f6;
-  --amber: #f59e0b;
-  --red: #ef4444;
-  --radius: 8px;
-  --safe-b: env(safe-area-inset-bottom, 0px);
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
-  background: var(--bg); color: var(--text);
-  height: 100dvh; overflow: hidden;
-  -webkit-text-size-adjust: 100%;
-}
-.app { display:flex; flex-direction:column; height:100dvh; }
-
-/* Header */
-.header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top));
-  background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink:0;
-}
-.header h1 {
-  font-family: 'SF Mono', 'Menlo', monospace;
-  font-size: 17px; font-weight: 700; letter-spacing: 1px; color: var(--accent);
-}
-.header-sub { font-size: 11px; color: var(--muted); font-weight: 400; }
-.header-actions { display:flex; gap:8px; }
-.icon-btn {
-  background: var(--surface2); border:1px solid var(--border);
-  color: var(--muted); border-radius: 8px;
-  width:36px; height:36px; display:flex; align-items:center; justify-content:center;
-  cursor:pointer; font-size:16px; transition: all .15s;
-}
-.icon-btn:active { background: var(--border); }
-
-/* Chat */
-.chat-area {
-  flex:1; overflow-y:auto; padding:16px;
-  -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
-}
-.msg { margin-bottom:16px; max-width:92%; animation: fadeIn .2s ease; }
-.msg.user { margin-left:auto; }
-.msg.ai { margin-right:auto; }
-.msg-bubble {
-  padding:12px 14px; border-radius:14px; font-size:15px; line-height:1.55;
-  word-wrap: break-word; white-space: pre-wrap;
-}
-.msg.user .msg-bubble {
-  background: var(--accent); color: #0a0e14; border-bottom-right-radius:4px; font-weight:500;
-}
-.msg.ai .msg-bubble {
-  background: var(--surface2); border:1px solid var(--border); border-bottom-left-radius:4px;
-}
-.msg-source {
-  margin-top:8px; padding:8px 10px; background: var(--surface);
-  border:1px solid var(--border); border-radius:8px;
-  font-family: 'SF Mono', monospace; font-size: 12px; color: var(--muted);
-  cursor:pointer; transition: all .15s;
-}
-.msg-source:active { background: var(--surface2); border-color: var(--accent); }
-.msg-source-label { color: var(--accent); font-weight:600; margin-bottom:4px; }
-.msg-source-text { color: var(--text); opacity: 0.8; line-height:1.4; }
-.source-expand { display:none; margin-top:8px; padding:10px; background:var(--bg); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text); white-space:pre-wrap; max-height:200px; overflow-y:auto; }
-.source-expand.open { display:block; }
-
-/* Input */
-.input-area {
-  padding: 12px 16px; padding-bottom: max(12px, var(--safe-b));
-  background: var(--surface); border-top: 1px solid var(--border); flex-shrink:0;
-}
-.input-row { display:flex; gap:8px; align-items:flex-end; }
-.input-field {
-  flex:1; background: var(--surface2); border:1px solid var(--border);
-  border-radius:20px; padding:10px 16px; color:var(--text);
-  font-size:16px; font-family:inherit; outline:none; resize:none;
-  max-height:120px; line-height:1.4; transition: border-color .15s;
-}
-.input-field:focus { border-color: var(--accent); }
-.input-field::placeholder { color: var(--muted); }
-.send-btn {
-  width:40px; height:40px; border-radius:50%;
-  background: var(--accent); border:none; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; transition: opacity .15s;
-}
-.send-btn:disabled { opacity: 0.3; }
-.send-btn svg { fill: #0a0e14; }
-
-/* Status */
-.status-bar {
-  display:flex; align-items:center; gap:8px;
-  padding:8px 16px; font-size:12px; color: var(--muted);
-  background: var(--surface); border-top: 1px solid var(--border);
-}
-.status-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-.status-dot.green { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-.status-dot.amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
-.status-dot.red { background: var(--red); }
-.status-dot.blue { background: var(--blue); animation: pulse 1.5s infinite; }
-
-/* Panel */
-.panel-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.6);
-  z-index:100; display:none; animation: fadeIn .15s;
-}
-.panel-overlay.open { display:flex; align-items:flex-end; justify-content:center; }
-.panel {
-  background: var(--surface); border-radius:16px 16px 0 0;
-  width:100%; max-width:500px; max-height:85dvh;
-  padding:20px; padding-bottom: max(20px, var(--safe-b));
-  overflow-y:auto; animation: slideUp .25s ease;
-}
-.panel h2 { font-size:18px; font-weight:700; margin-bottom:16px; color:var(--text); }
-.panel h3 { font-size:14px; font-weight:600; margin:16px 0 8px; color:var(--accent); }
-.panel p { font-size:14px; color:var(--muted); line-height:1.5; margin-bottom:12px; }
-.panel-close { float:right; background:none; border:none; color:var(--muted); font-size:24px; cursor:pointer; padding:0 4px; }
-
-.btn {
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  padding:12px 20px; border-radius:10px; font-size:15px; font-weight:600;
-  border:none; cursor:pointer; width:100%; transition: all .15s; margin-bottom:8px;
-}
-.btn-primary { background: var(--accent); color:#0a0e14; }
-.btn-primary:active { opacity: 0.8; }
-.btn-secondary { background: var(--surface2); color:var(--text); border:1px solid var(--border); }
-.btn-secondary:active { background: var(--border); }
-.btn-danger { background: rgba(239,68,68,0.15); color: var(--red); border:1px solid rgba(239,68,68,0.3); }
-.btn:disabled { opacity:0.4; pointer-events:none; }
-
-.file-drop {
-  border:2px dashed var(--border); border-radius:12px;
-  padding:24px; text-align:center; cursor:pointer;
-  transition: all .15s; margin-bottom:12px;
-}
-.file-drop:active { border-color: var(--accent); background: var(--accent-dim); }
-
-.manual-item {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px; background:var(--surface2); border-radius:8px;
-  margin-bottom:8px; border:1px solid var(--border);
-}
-.manual-item-info { flex:1; }
-.manual-item-name { font-size:14px; font-weight:600; }
-.manual-item-meta { font-size:12px; color:var(--muted); margin-top:2px; }
-.manual-item-del { background:none; border:none; color:var(--red); font-size:18px; cursor:pointer; padding:4px 8px; }
-
-.progress-bar { height:6px; background:var(--surface2); border-radius:3px; margin:12px 0; overflow:hidden; }
-.progress-fill { height:100%; background:var(--accent); border-radius:3px; transition: width .3s; }
-
-.model-option {
-  padding:12px; background:var(--surface2); border:1px solid var(--border);
-  border-radius:8px; margin-bottom:8px; cursor:pointer; transition: all .15s;
-}
-.model-option:active, .model-option.selected { border-color: var(--accent); background: var(--accent-dim); }
-.model-option-name { font-size:14px; font-weight:600; }
-.model-option-desc { font-size:12px; color:var(--muted); margin-top:2px; }
-
-/* Welcome */
-.welcome { padding:32px 16px; text-align:center; }
-.welcome h2 { font-size:22px; font-weight:700; margin:16px 0 8px; }
-.welcome p { font-size:14px; color:var(--muted); line-height:1.5; max-width:320px; margin:0 auto 24px; }
-.welcome-steps { text-align:left; max-width:320px; margin:0 auto; }
-.welcome-step { display:flex; gap:12px; margin-bottom:16px; align-items:flex-start; }
-.welcome-step-num {
-  width:28px; height:28px; border-radius:50%; flex-shrink:0;
-  background: var(--accent-dim); color: var(--accent);
-  font-family: monospace; font-size:14px; font-weight:700;
-  display:flex; align-items:center; justify-content:center;
-}
-.welcome-step-num.done { background: var(--accent); color: #0a0e14; }
-.welcome-step-text { font-size:14px; color:var(--text); line-height:1.4; padding-top:3px; }
-.welcome-step-text small { color:var(--muted); display:block; margin-top:2px; }
-
-.typing-dots span {
-  display:inline-block; width:6px; height:6px; border-radius:50%;
-  background: var(--muted); margin:0 2px; animation: bounce .6s infinite alternate;
-}
-.typing-dots span:nth-child(2) { animation-delay: .15s; }
-.typing-dots span:nth-child(3) { animation-delay: .3s; }
-
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-@keyframes bounce { to{transform:translateY(-4px);opacity:0.4} }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+:root{--bg:#0a0e14;--surface:#131820;--surface2:#1a2230;--border:#1e2a3a;--text:#e0e6ed;--muted:#6b7a8d;--accent:#00d4aa;--accent-dim:rgba(0,212,170,0.12);--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100dvh;overflow:hidden;-webkit-text-size-adjust:100%}
+.app{display:flex;flex-direction:column;height:100dvh}
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.header h1{font-family:'SF Mono','Menlo',monospace;font-size:17px;font-weight:700;letter-spacing:1px;color:var(--accent)}
+.header-sub{font-size:11px;color:var(--muted);font-weight:400}
+.header-actions{display:flex;gap:8px}
+.icon-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+.icon-btn:active{background:var(--border)}
+.chat-area{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+.msg{margin-bottom:16px;max-width:92%;animation:fadeIn .2s ease}
+.msg.user{margin-left:auto}
+.msg.ai{margin-right:auto}
+.msg-bubble{padding:12px 14px;border-radius:14px;font-size:15px;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
+.msg.user .msg-bubble{background:var(--accent);color:#0a0e14;border-bottom-right-radius:4px;font-weight:500}
+.msg.ai .msg-bubble{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg-source{margin-top:8px;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:'SF Mono',monospace;font-size:12px;color:var(--muted);cursor:pointer}
+.msg-source:active{background:var(--surface2);border-color:var(--accent)}
+.msg-source-label{color:var(--accent);font-weight:600;margin-bottom:4px}
+.msg-source-text{color:var(--text);opacity:0.8;line-height:1.4}
+.source-expand{display:none;margin-top:8px;padding:10px;background:var(--bg);border-radius:6px;font-size:13px;line-height:1.5;color:var(--text);white-space:pre-wrap;max-height:200px;overflow-y:auto}
+.source-expand.open{display:block}
+.input-area{padding:12px 16px;padding-bottom:max(12px,var(--safe-b));background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+.input-field{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 16px;color:var(--text);font-size:16px;font-family:inherit;outline:none;resize:none;max-height:120px;line-height:1.4}
+.input-field:focus{border-color:var(--accent)}
+.input-field::placeholder{color:var(--muted)}
+.send-btn{width:40px;height:40px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.send-btn:disabled{opacity:0.3}
+.send-btn svg{fill:#0a0e14}
+.status-bar{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12px;color:var(--muted);background:var(--surface);border-top:1px solid var(--border)}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.status-dot.green{background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.status-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.status-dot.red{background:var(--red)}
+.status-dot.blue{background:var(--blue);animation:pulse 1.5s infinite}
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:none;animation:fadeIn .15s}
+.panel-overlay.open{display:flex;align-items:flex-end;justify-content:center}
+.panel{background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-width:500px;max-height:85dvh;padding:20px;padding-bottom:max(20px,var(--safe-b));overflow-y:auto;animation:slideUp .25s ease}
+.panel h2{font-size:18px;font-weight:700;margin-bottom:16px;color:var(--text)}
+.panel h3{font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--accent)}
+.panel p{font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:12px}
+.panel-close{float:right;background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;padding:0 4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:600;border:none;cursor:pointer;width:100%;margin-bottom:8px}
+.btn-primary{background:var(--accent);color:#0a0e14}
+.btn-primary:active{opacity:0.8}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:active{background:var(--border)}
+.btn-danger{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+.btn:disabled{opacity:0.4;pointer-events:none}
+.file-drop{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;margin-bottom:12px}
+.file-drop:active{border-color:var(--accent);background:var(--accent-dim)}
+.manual-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px;border:1px solid var(--border)}
+.manual-item-info{flex:1}
+.manual-item-name{font-size:14px;font-weight:600}
+.manual-item-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.manual-item-del{background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;padding:4px 8px}
+.progress-bar{height:6px;background:var(--surface2);border-radius:3px;margin:12px 0;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+.model-option{padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer}
+.model-option:active,.model-option.selected{border-color:var(--accent);background:var(--accent-dim)}
+.model-option-name{font-size:14px;font-weight:600}
+.model-option-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.welcome{padding:32px 16px;text-align:center}
+.welcome h2{font-size:22px;font-weight:700;margin:16px 0 8px}
+.welcome p{font-size:14px;color:var(--muted);line-height:1.5;max-width:320px;margin:0 auto 24px}
+.welcome-steps{text-align:left;max-width:320px;margin:0 auto}
+.welcome-step{display:flex;gap:12px;margin-bottom:16px;align-items:flex-start}
+.welcome-step-num{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:var(--accent-dim);color:var(--accent);font-family:monospace;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.welcome-step-num.done{background:var(--accent);color:#0a0e14}
+.welcome-step-text{font-size:14px;color:var(--text);line-height:1.4;padding-top:3px}
+.welcome-step-text small{color:var(--muted);display:block;margin-top:2px}
+.typing-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);margin:0 2px;animation:bounce .6s infinite alternate}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes bounce{to{transform:translateY(-4px);opacity:0.4}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 </style>
 </head>
 <body>
@@ -212,660 +99,561 @@ body {
       <button class="icon-btn" id="btnModel" title="AI Model">🤖</button>
     </div>
   </div>
-
   <div class="chat-area" id="chatArea">
     <div class="welcome" id="welcome">
       <div style="font-size:48px">✈️</div>
       <h2>A321 Reference AI</h2>
       <p>Offline AI for your FCOM, FCTM &amp; MANOPS. Everything stays on your device.</p>
       <div class="welcome-steps">
-        <div class="welcome-step">
-          <div class="welcome-step-num" id="step1num">1</div>
-          <div class="welcome-step-text">Import your manuals<small>PDF files — OCR runs on-device automatically</small></div>
-        </div>
-        <div class="welcome-step">
-          <div class="welcome-step-num" id="step2num">2</div>
-          <div class="welcome-step-text">Download AI model (optional)<small>~2 GB one-time. Or use search-only mode.</small></div>
-        </div>
-        <div class="welcome-step">
-          <div class="welcome-step-num" id="step3num">3</div>
-          <div class="welcome-step-text">Ask anything about the A321<small>Works offline — airplane mode OK</small></div>
-        </div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step1num">1</div><div class="welcome-step-text">Import your manuals<small>PDF, JSON, or text files</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step2num">2</div><div class="welcome-step-text">Download AI model (optional)<small>Or use search-only mode — no download needed</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step3num">3</div><div class="welcome-step-text">Ask anything about the A321<small>Works offline after setup</small></div></div>
       </div>
     </div>
   </div>
-
-  <div class="status-bar" id="statusBar">
-    <div class="status-dot red" id="statusDot"></div>
-    <span id="statusText">No manuals loaded</span>
-  </div>
-
-  <div class="input-area">
-    <div class="input-row">
-      <textarea class="input-field" id="inputField" placeholder="Ask about the A321..." rows="1"></textarea>
-      <button class="send-btn" id="sendBtn" disabled>
-        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </div>
-  </div>
+  <div class="status-bar"><div class="status-dot red" id="statusDot"></div><span id="statusText">No manuals loaded</span></div>
+  <div class="input-area"><div class="input-row">
+    <textarea class="input-field" id="inputField" placeholder="Ask about the A321..." rows="1"></textarea>
+    <button class="send-btn" id="sendBtn" disabled><svg width="18" height="18" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+  </div></div>
 </div>
 
 <!-- Manuals Panel -->
-<div class="panel-overlay" id="manualsPanel">
-  <div class="panel">
-    <button class="panel-close" id="closeManualsPanel">&times;</button>
-    <h2>📄 Manuals</h2>
-    <div class="file-drop" id="fileDrop">
-      <div style="font-size:32px;margin-bottom:8px">📁</div>
-      <div style="font-size:14px;color:var(--muted)">Tap to import PDFs or text files<br><small>Scanned PDFs are OCR'd automatically on-device</small></div>
-      <input type="file" id="fileInput" accept=".pdf,.json,.txt" multiple style="display:none">
-    </div>
-    <div class="progress-bar" id="ocrProgress" style="display:none"><div class="progress-fill" id="ocrProgressFill" style="width:0%"></div></div>
-    <div id="ocrStatus" style="font-size:13px;color:var(--muted);margin-bottom:12px;"></div>
-    <div id="manualsList"></div>
-    <div id="importStatus"></div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
-    <h3>Or paste text directly</h3>
-    <p>Copy text from a manual and paste it here.</p>
-    <input type="text" id="pasteLabel" placeholder="e.g. FCOM Limitations Ch.1" style="width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;margin-bottom:8px;outline:none;">
-    <textarea id="pasteArea" placeholder="Paste manual text here..." style="width:100%;height:100px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;outline:none;resize:vertical;margin-bottom:8px;"></textarea>
-    <button class="btn btn-secondary" id="pasteImport">Import pasted text</button>
-    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
-    <button class="btn btn-danger" id="btnClearAll">Clear all manuals</button>
+<div class="panel-overlay" id="manualsPanel"><div class="panel">
+  <button class="panel-close" id="closeManualsPanel">&times;</button>
+  <h2>📄 Manuals</h2>
+  <div class="file-drop" id="fileDrop">
+    <div style="font-size:32px;margin-bottom:8px">📁</div>
+    <div style="font-size:14px;color:var(--muted)">Tap to import PDFs or text files<br><small>Scanned PDFs are OCR'd on-device</small></div>
+    <input type="file" id="fileInput" accept=".pdf,.json,.txt" multiple style="display:none">
   </div>
-</div>
+  <div class="progress-bar" id="ocrProgress" style="display:none"><div class="progress-fill" id="ocrProgressFill" style="width:0%"></div></div>
+  <div id="ocrStatus" style="font-size:13px;color:var(--muted);margin-bottom:12px"></div>
+  <div id="manualsList"></div>
+  <div id="importStatus"></div>
+  <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+  <h3>Or paste text directly</h3>
+  <p>Copy text from a manual and paste it here.</p>
+  <input type="text" id="pasteLabel" placeholder="e.g. FCOM Limitations" style="width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;margin-bottom:8px;outline:none">
+  <textarea id="pasteArea" placeholder="Paste manual text here..." style="width:100%;height:100px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;outline:none;resize:vertical;margin-bottom:8px"></textarea>
+  <button class="btn btn-secondary" id="pasteImport">Import pasted text</button>
+  <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+  <button class="btn btn-danger" id="btnClearAll">Clear all manuals</button>
+</div></div>
 
 <!-- Model Panel -->
-<div class="panel-overlay" id="modelPanel">
-  <div class="panel">
-    <button class="panel-close" id="closeModelPanel">&times;</button>
-    <h2>🤖 AI Model</h2>
-    <p>Download a model for AI-generated answers. Or use search-only mode — it finds the exact manual text without any model.</p>
-    <div id="modelList"></div>
-    <div class="progress-bar" id="modelProgress" style="display:none"><div class="progress-fill" id="modelProgressFill" style="width:0%"></div></div>
-    <div id="modelStatus" style="font-size:13px;color:var(--muted);margin:8px 0;"></div>
-    <button class="btn btn-primary" id="btnLoadModel">Download &amp; Load Model</button>
-    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
-    <h3>Search-only mode</h3>
-    <p>No download needed. Finds and shows the exact manual text. Faster and always accurate.</p>
-    <button class="btn btn-secondary" id="btnSearchOnly">Use search-only mode</button>
-  </div>
-</div>
+<div class="panel-overlay" id="modelPanel"><div class="panel">
+  <button class="panel-close" id="closeModelPanel">&times;</button>
+  <h2>🤖 AI Model</h2>
+  <p>Download a model for AI-generated answers, or use search-only mode.</p>
+  <div id="modelList"></div>
+  <div class="progress-bar" id="modelProgress" style="display:none"><div class="progress-fill" id="modelProgressFill" style="width:0%"></div></div>
+  <div id="modelStatus" style="font-size:13px;color:var(--muted);margin:8px 0"></div>
+  <button class="btn btn-primary" id="btnLoadModel">Download &amp; Load Model</button>
+  <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+  <h3>Search-only mode</h3>
+  <p>No download. Finds and shows exact manual text. Faster and always accurate.</p>
+  <button class="btn btn-secondary" id="btnSearchOnly">Use search-only mode</button>
+</div></div>
 
-<!-- Load Tesseract.js globally -->
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<!-- Libraries: PDF.js + Tesseract.js loaded as regular scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
-<script type="module">
-// ═══════════════════════════════════════════
-//  A321 REF — Offline AI Reference Tool
-//  PDF OCR (Tesseract.js) + BM25 + WebLLM
-// ═══════════════════════════════════════════
+<script>
+// Wait for libs to load
+window.addEventListener('load', function() {
 
-// ── Load PDF.js ──
-let pdfjsLib;
-try {
-  pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.min.mjs');
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.worker.min.mjs';
-} catch(e) {
-  console.warn('PDF.js load failed, will retry', e);
+// PDF.js worker
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 }
 
 // ── IndexedDB ──
-const DB_NAME = 'a321ref';
-const DB_VER = 2;
+var DB_NAME = 'a321ref', DB_VER = 3;
 function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = () => {
-      const db = req.result;
+  return new Promise(function(resolve, reject) {
+    var req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = function() {
+      var db = req.result;
       if (!db.objectStoreNames.contains('manuals')) db.createObjectStore('manuals', { keyPath: 'id' });
       if (!db.objectStoreNames.contains('chunks')) db.createObjectStore('chunks', { keyPath: 'id' });
       if (!db.objectStoreNames.contains('config')) db.createObjectStore('config', { keyPath: 'key' });
     };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+    req.onsuccess = function() { resolve(req.result); };
+    req.onerror = function() { reject(req.error); };
   });
 }
-async function dbPut(store, data) {
-  const db = await openDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readwrite');
-    tx.objectStore(store).put(data);
-    tx.oncomplete = () => res();
-    tx.onerror = () => rej(tx.error);
+function dbPut(store, data) {
+  return openDB().then(function(db) {
+    return new Promise(function(res, rej) {
+      var tx = db.transaction(store, 'readwrite');
+      tx.objectStore(store).put(data);
+      tx.oncomplete = function() { res(); };
+      tx.onerror = function() { rej(tx.error); };
+    });
   });
 }
-async function dbGetAll(store) {
-  const db = await openDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readonly');
-    const req = tx.objectStore(store).getAll();
-    req.onsuccess = () => res(req.result);
-    req.onerror = () => rej(req.error);
+function dbGetAll(store) {
+  return openDB().then(function(db) {
+    return new Promise(function(res, rej) {
+      var tx = db.transaction(store, 'readonly');
+      var req = tx.objectStore(store).getAll();
+      req.onsuccess = function() { res(req.result); };
+      req.onerror = function() { rej(req.error); };
+    });
   });
 }
-async function dbGet(store, key) {
-  const db = await openDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readonly');
-    const req = tx.objectStore(store).get(key);
-    req.onsuccess = () => res(req.result);
-    req.onerror = () => rej(req.error);
+function dbGet(store, key) {
+  return openDB().then(function(db) {
+    return new Promise(function(res, rej) {
+      var tx = db.transaction(store, 'readonly');
+      var req = tx.objectStore(store).get(key);
+      req.onsuccess = function() { res(req.result); };
+      req.onerror = function() { rej(req.error); };
+    });
   });
 }
-async function dbDelete(store, key) {
-  const db = await openDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readwrite');
-    tx.objectStore(store).delete(key);
-    tx.oncomplete = () => res();
-    tx.onerror = () => rej(tx.error);
+function dbDelete(store, key) {
+  return openDB().then(function(db) {
+    return new Promise(function(res, rej) {
+      var tx = db.transaction(store, 'readwrite');
+      tx.objectStore(store).delete(key);
+      tx.oncomplete = function() { res(); };
+      tx.onerror = function() { rej(tx.error); };
+    });
   });
 }
-async function dbClearStore(store) {
-  const db = await openDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readwrite');
-    tx.objectStore(store).clear();
-    tx.oncomplete = () => res();
-    tx.onerror = () => rej(tx.error);
+function dbClearStore(store) {
+  return openDB().then(function(db) {
+    return new Promise(function(res, rej) {
+      var tx = db.transaction(store, 'readwrite');
+      tx.objectStore(store).clear();
+      tx.oncomplete = function() { res(); };
+      tx.onerror = function() { rej(tx.error); };
+    });
   });
 }
 
-// ── BM25 Search ──
-class BM25 {
-  constructor(k1 = 1.5, b = 0.75) {
-    this.k1 = k1; this.b = b;
-    this.docs = []; this.avgdl = 0; this.idf = {};
-    this.docFreq = {}; this.docTermFreqs = []; this.docLengths = [];
-  }
-  tokenize(text) {
-    return text.toLowerCase().replace(/[^a-z0-9\s./-]/g, ' ').split(/\s+/).filter(t => t.length > 1);
-  }
-  buildIndex(docs) {
-    this.docs = docs;
-    const N = docs.length;
-    this.docTermFreqs = []; this.docLengths = []; this.docFreq = {};
-    for (const doc of docs) {
-      const tokens = this.tokenize(doc.text);
-      this.docLengths.push(tokens.length);
-      const tf = {}; const seen = new Set();
-      for (const t of tokens) {
-        tf[t] = (tf[t] || 0) + 1;
-        if (!seen.has(t)) { this.docFreq[t] = (this.docFreq[t] || 0) + 1; seen.add(t); }
-      }
-      this.docTermFreqs.push(tf);
-    }
-    this.avgdl = this.docLengths.reduce((a, b) => a + b, 0) / (N || 1);
-    this.idf = {};
-    for (const [term, df] of Object.entries(this.docFreq)) {
-      this.idf[term] = Math.log((N - df + 0.5) / (df + 0.5) + 1);
-    }
-  }
-  search(query, topK = 5) {
-    const qTokens = this.tokenize(query);
-    const scores = [];
-    for (let i = 0; i < this.docs.length; i++) {
-      let score = 0;
-      const dl = this.docLengths[i]; const tf = this.docTermFreqs[i];
-      for (const t of qTokens) {
-        if (!this.idf[t]) continue;
-        const f = tf[t] || 0;
-        score += this.idf[t] * (f * (this.k1 + 1)) / (f + this.k1 * (1 - this.b + this.b * dl / this.avgdl));
-      }
-      if (score > 0) scores.push({ idx: i, score });
-    }
-    scores.sort((a, b) => b.score - a.score);
-    return scores.slice(0, topK).map(s => ({ ...this.docs[s.idx], score: s.score }));
-  }
+// ── BM25 ──
+function BM25(k1, b) {
+  this.k1 = k1 || 1.5; this.b = b || 0.75;
+  this.docs = []; this.avgdl = 0; this.idf = {};
+  this.docFreq = {}; this.docTermFreqs = []; this.docLengths = [];
 }
+BM25.prototype.tokenize = function(text) {
+  return text.toLowerCase().replace(/[^a-z0-9\s.\/-]/g, ' ').split(/\s+/).filter(function(t) { return t.length > 1; });
+};
+BM25.prototype.buildIndex = function(docs) {
+  this.docs = docs; var N = docs.length;
+  this.docTermFreqs = []; this.docLengths = []; this.docFreq = {};
+  for (var d = 0; d < docs.length; d++) {
+    var tokens = this.tokenize(docs[d].text);
+    this.docLengths.push(tokens.length);
+    var tf = {}, seen = {};
+    for (var i = 0; i < tokens.length; i++) {
+      var t = tokens[i];
+      tf[t] = (tf[t] || 0) + 1;
+      if (!seen[t]) { this.docFreq[t] = (this.docFreq[t] || 0) + 1; seen[t] = true; }
+    }
+    this.docTermFreqs.push(tf);
+  }
+  this.avgdl = this.docLengths.reduce(function(a,b){return a+b;}, 0) / (N || 1);
+  this.idf = {};
+  var self = this;
+  Object.keys(this.docFreq).forEach(function(term) {
+    var df = self.docFreq[term];
+    self.idf[term] = Math.log((N - df + 0.5) / (df + 0.5) + 1);
+  });
+};
+BM25.prototype.search = function(query, topK) {
+  topK = topK || 5;
+  var qTokens = this.tokenize(query), scores = [], self = this;
+  for (var i = 0; i < this.docs.length; i++) {
+    var score = 0, dl = this.docLengths[i], tf = this.docTermFreqs[i];
+    for (var q = 0; q < qTokens.length; q++) {
+      var t = qTokens[q];
+      if (!self.idf[t]) continue;
+      var f = tf[t] || 0;
+      score += self.idf[t] * (f * (self.k1 + 1)) / (f + self.k1 * (1 - self.b + self.b * dl / self.avgdl));
+    }
+    if (score > 0) scores.push({ idx: i, score: score });
+  }
+  scores.sort(function(a,b) { return b.score - a.score; });
+  var results = [];
+  for (var s = 0; s < Math.min(topK, scores.length); s++) {
+    var doc = this.docs[scores[s].idx];
+    results.push({ text: doc.text, source: doc.source, page: doc.page, score: scores[s].score });
+  }
+  return results;
+};
 
 // ── State ──
-let engine = null;
-let bm25 = new BM25();
-let allChunks = [];
-let manuals = [];
-let mode = 'search';
-let isGenerating = false;
-let selectedModel = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
-let tesseractWorker = null;
+var engine = null, bm25 = new BM25(), allChunks = [], manuals = [];
+var mode = 'search', isGenerating = false;
+var selectedModel = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
+var tesseractWorker = null;
 
-const MODELS = [
+var MODELS = [
   { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC', name: 'Llama 3.2 3B', desc: 'Best balance. ~1.8 GB.', recommended: true },
   { id: 'Qwen2.5-3B-Instruct-q4f16_1-MLC', name: 'Qwen 2.5 3B', desc: 'Strong reasoning. ~1.8 GB.' },
-  { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', name: 'Llama 3.2 1B', desc: 'Fastest, lightest. ~0.7 GB.' },
+  { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', name: 'Llama 3.2 1B', desc: 'Fastest. ~0.7 GB.' },
   { id: 'Phi-3.5-mini-instruct-q4f16_1-MLC', name: 'Phi 3.5 Mini', desc: 'Strong reasoning. ~2.2 GB.' }
 ];
 
-const $ = id => document.getElementById(id);
+var $ = function(id) { return document.getElementById(id); };
 
 // ── Chunking ──
-function chunkText(text, source, page, chunkSize = 400) {
-  const words = text.split(/\s+/).filter(w => w.length > 0);
-  const chunks = [];
-  const overlap = 50;
-  for (let i = 0; i < words.length; i += chunkSize - overlap) {
-    const chunk = words.slice(i, i + chunkSize).join(' ');
+function chunkText(text, source, page) {
+  var words = text.split(/\s+/).filter(function(w){return w.length>0;});
+  var chunks = [], chunkSize = 400, overlap = 50;
+  for (var i = 0; i < words.length; i += chunkSize - overlap) {
+    var chunk = words.slice(i, i + chunkSize).join(' ');
     if (chunk.trim().length > 30) {
-      chunks.push({ text: chunk, source, page, id: `${source}_p${page}_c${chunks.length}_${Date.now()}` });
+      chunks.push({ text: chunk, source: source, page: page, id: source + '_p' + page + '_c' + chunks.length + '_' + Date.now() + Math.random() });
     }
   }
   return chunks;
 }
 
-// ── PDF OCR Pipeline ──
-async function initTesseract() {
-  if (tesseractWorker) return tesseractWorker;
-  tesseractWorker = await Tesseract.createWorker('eng');
-  return tesseractWorker;
-}
-
-async function extractPDF(file, onProgress) {
-  if (!pdfjsLib) {
-    pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.min.mjs');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.worker.min.mjs';
-  }
-
-  const arrayBuf = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
-  const totalPages = pdf.numPages;
-  const pages = [];
-  let needsOCR = false;
-
-  onProgress(0, totalPages, 'Checking pages...');
-
-  // First pass: try text extraction
-  for (let i = 1; i <= totalPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    const text = content.items.map(item => item.str).join(' ').trim();
-    pages.push({ page: i, text, ocr: false });
-    if (text.length < 50) needsOCR = true;
-    onProgress(i, totalPages, 'Extracting text...');
-  }
-
-  // Second pass: OCR pages that had no text
-  if (needsOCR) {
-    onProgress(0, totalPages, 'Starting OCR (this takes a while)...');
-    const worker = await initTesseract();
-
-    for (let i = 0; i < pages.length; i++) {
-      if (pages[i].text.length < 50) {
-        // Render page to canvas
-        const page = await pdf.getPage(i + 1);
-        const scale = 2; // 144 DPI
-        const viewport = page.getViewport({ scale });
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext('2d');
-        await page.render({ canvasContext: ctx, viewport }).promise;
-
-        // OCR the rendered image
-        const { data } = await worker.recognize(canvas);
-        pages[i].text = data.text.trim();
-        pages[i].ocr = true;
-      }
-      onProgress(i + 1, totalPages, `OCR page ${i+1}/${totalPages}...`);
-    }
-  }
-
-  return { pages: pages.filter(p => p.text.length > 10), totalPages };
+// ── PDF Extract ──
+function extractPDF(file, onProgress) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function() {
+      var typedArray = new Uint8Array(reader.result);
+      pdfjsLib.getDocument({ data: typedArray }).promise.then(function(pdf) {
+        var totalPages = pdf.numPages, pages = [], needsOCR = false;
+        var processPage = function(pageNum) {
+          if (pageNum > totalPages) {
+            if (!needsOCR) { resolve({ pages: pages.filter(function(p){return p.text.length>10;}), totalPages: totalPages }); return; }
+            // OCR pass
+            onProgress(0, totalPages, 'Starting OCR...');
+            (window.Tesseract ? Promise.resolve() : Promise.reject(new Error('Tesseract not loaded'))).then(function() {
+              var ocrPage = function(idx) {
+                if (idx >= pages.length) {
+                  resolve({ pages: pages.filter(function(p){return p.text.length>10;}), totalPages: totalPages });
+                  return;
+                }
+                if (pages[idx].text.length >= 50) { onProgress(idx+1, totalPages, 'OCR...'); ocrPage(idx+1); return; }
+                pdf.getPage(idx + 1).then(function(page) {
+                  var scale = 2;
+                  var viewport = page.getViewport({ scale: scale });
+                  var canvas = document.createElement('canvas');
+                  canvas.width = viewport.width; canvas.height = viewport.height;
+                  var ctx = canvas.getContext('2d');
+                  page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function() {
+                    Tesseract.recognize(canvas, 'eng').then(function(result) {
+                      pages[idx].text = result.data.text.trim();
+                      onProgress(idx+1, totalPages, 'OCR page ' + (idx+1) + '/' + totalPages);
+                      ocrPage(idx+1);
+                    }).catch(function(err) {
+                      console.warn('OCR failed page', idx+1, err);
+                      ocrPage(idx+1);
+                    });
+                  });
+                });
+              };
+              ocrPage(0);
+            }).catch(reject);
+            return;
+          }
+          pdf.getPage(pageNum).then(function(page) {
+            page.getTextContent().then(function(content) {
+              var text = content.items.map(function(item){return item.str;}).join(' ').trim();
+              pages.push({ page: pageNum, text: text });
+              if (text.length < 50) needsOCR = true;
+              onProgress(pageNum, totalPages, 'Reading pages...');
+              processPage(pageNum + 1);
+            });
+          }).catch(function(err) {
+            pages.push({ page: pageNum, text: '' });
+            processPage(pageNum + 1);
+          });
+        };
+        processPage(1);
+      }).catch(reject);
+    };
+    reader.onerror = function() { reject(new Error('Failed to read file')); };
+    reader.readAsArrayBuffer(file);
+  });
 }
 
 // ── Import ──
-async function importManual(name, pages, totalPages, filename) {
-  const manualId = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
-  const chunks = [];
-  for (const p of pages) {
-    chunks.push(...chunkText(p.text, name, p.page));
+function importManual(name, pages, totalPages, filename) {
+  var manualId = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
+  var chunks = [];
+  for (var i = 0; i < pages.length; i++) {
+    var c = chunkText(pages[i].text, name, pages[i].page);
+    for (var j = 0; j < c.length; j++) chunks.push(c[j]);
   }
-
-  const manual = {
-    id: manualId, name, filename: filename || name,
-    totalPages, extractedPages: pages.length,
-    chunkCount: chunks.length, importedAt: new Date().toISOString()
-  };
-
-  await dbPut('manuals', manual);
-  for (const chunk of chunks) {
-    chunk.manualId = manualId;
-    await dbPut('chunks', chunk);
-  }
-  return manual;
+  var manual = { id: manualId, name: name, filename: filename || name, totalPages: totalPages, extractedPages: pages.length, chunkCount: chunks.length, importedAt: new Date().toISOString() };
+  return dbPut('manuals', manual).then(function() {
+    var p = Promise.resolve();
+    chunks.forEach(function(chunk) {
+      chunk.manualId = manualId;
+      p = p.then(function() { return dbPut('chunks', chunk); });
+    });
+    return p.then(function() { return manual; });
+  });
 }
 
-async function rebuildIndex() {
-  allChunks = await dbGetAll('chunks');
-  manuals = await dbGetAll('manuals');
-  bm25.buildIndex(allChunks);
-  updateStatus(); updateWelcomeSteps(); renderManualsList();
+function rebuildIndex() {
+  return dbGetAll('chunks').then(function(c) {
+    allChunks = c;
+    return dbGetAll('manuals');
+  }).then(function(m) {
+    manuals = m;
+    bm25.buildIndex(allChunks);
+    updateStatus(); updateWelcomeSteps(); renderManualsList();
+  });
 }
 
 // ── UI ──
+function esc(text) { var d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+
 function updateStatus() {
-  const hasDocs = manuals.length > 0;
-  if (!hasDocs) {
-    $('statusDot').className = 'status-dot red';
-    $('statusText').textContent = 'No manuals loaded';
-  } else if (mode === 'search') {
-    $('statusDot').className = 'status-dot green';
-    $('statusText').textContent = `Search mode · ${allChunks.length} chunks · ${manuals.length} manual${manuals.length>1?'s':''}`;
-  } else if (engine) {
-    $('statusDot').className = 'status-dot green';
-    $('statusText').textContent = `AI mode · ${allChunks.length} chunks · Model loaded`;
-  } else {
-    $('statusDot').className = 'status-dot amber';
-    $('statusText').textContent = `${allChunks.length} chunks · No AI model`;
-  }
+  var hasDocs = manuals.length > 0;
+  if (!hasDocs) { $('statusDot').className = 'status-dot red'; $('statusText').textContent = 'No manuals loaded'; }
+  else if (mode === 'search') { $('statusDot').className = 'status-dot green'; $('statusText').textContent = 'Search mode · ' + allChunks.length + ' chunks · ' + manuals.length + ' manual' + (manuals.length>1?'s':''); }
+  else if (engine) { $('statusDot').className = 'status-dot green'; $('statusText').textContent = 'AI mode · ' + allChunks.length + ' chunks · Model loaded'; }
+  else { $('statusDot').className = 'status-dot amber'; $('statusText').textContent = allChunks.length + ' chunks · No AI model'; }
   $('sendBtn').disabled = !hasDocs || isGenerating;
 }
 
 function updateWelcomeSteps() {
-  const s1 = $('step1num'), s2 = $('step2num');
-  s1.className = manuals.length > 0 ? 'welcome-step-num done' : 'welcome-step-num';
-  s1.textContent = manuals.length > 0 ? '✓' : '1';
-  s2.className = (engine || mode === 'search') ? 'welcome-step-num done' : 'welcome-step-num';
-  s2.textContent = (engine || mode === 'search') ? '✓' : '2';
+  $('step1num').className = manuals.length > 0 ? 'welcome-step-num done' : 'welcome-step-num';
+  $('step1num').textContent = manuals.length > 0 ? '✓' : '1';
+  $('step2num').className = (engine || mode === 'search') ? 'welcome-step-num done' : 'welcome-step-num';
+  $('step2num').textContent = (engine || mode === 'search') ? '✓' : '2';
 }
 
 function renderManualsList() {
-  const list = $('manualsList'); list.innerHTML = '';
-  for (const m of manuals) {
-    const div = document.createElement('div');
-    div.className = 'manual-item';
-    div.innerHTML = `
-      <div class="manual-item-info">
-        <div class="manual-item-name">${esc(m.name)}</div>
-        <div class="manual-item-meta">${m.chunkCount} chunks · ${m.extractedPages}/${m.totalPages} pages</div>
-      </div>
-      <button class="manual-item-del" data-id="${m.id}">✕</button>`;
+  var list = $('manualsList'); list.innerHTML = '';
+  manuals.forEach(function(m) {
+    var div = document.createElement('div'); div.className = 'manual-item';
+    div.innerHTML = '<div class="manual-item-info"><div class="manual-item-name">' + esc(m.name) + '</div><div class="manual-item-meta">' + m.chunkCount + ' chunks · ' + m.extractedPages + '/' + m.totalPages + ' pages</div></div><button class="manual-item-del" data-id="' + m.id + '">✕</button>';
     list.appendChild(div);
-  }
-  list.querySelectorAll('.manual-item-del').forEach(btn => {
-    btn.onclick = async () => {
-      const id = btn.dataset.id;
-      await dbDelete('manuals', id);
-      const db = await openDB();
-      const tx = db.transaction('chunks', 'readwrite');
-      const store = tx.objectStore('chunks');
-      const all = await new Promise(r => { const req = store.getAll(); req.onsuccess = () => r(req.result); });
-      for (const c of all) { if (c.manualId === id) store.delete(c.id); }
-      await new Promise(r => { tx.oncomplete = r; });
-      await rebuildIndex();
+  });
+  list.querySelectorAll('.manual-item-del').forEach(function(btn) {
+    btn.onclick = function() {
+      var id = btn.dataset.id;
+      dbDelete('manuals', id).then(function() { return openDB(); }).then(function(db) {
+        return new Promise(function(res) {
+          var tx = db.transaction('chunks', 'readwrite');
+          var store = tx.objectStore('chunks');
+          var req = store.getAll();
+          req.onsuccess = function() {
+            req.result.forEach(function(c) { if (c.manualId === id) store.delete(c.id); });
+            tx.oncomplete = function() { res(); };
+          };
+        });
+      }).then(rebuildIndex);
     };
   });
 }
 
 function renderModelList() {
-  const list = $('modelList'); list.innerHTML = '';
-  for (const m of MODELS) {
-    const div = document.createElement('div');
-    div.className = `model-option ${m.id === selectedModel ? 'selected' : ''}`;
-    div.innerHTML = `<div class="model-option-name">${m.name} ${m.recommended?'⭐':''}</div><div class="model-option-desc">${m.desc}</div>`;
-    div.onclick = () => { selectedModel = m.id; renderModelList(); };
+  var list = $('modelList'); list.innerHTML = '';
+  MODELS.forEach(function(m) {
+    var div = document.createElement('div');
+    div.className = 'model-option ' + (m.id === selectedModel ? 'selected' : '');
+    div.innerHTML = '<div class="model-option-name">' + m.name + (m.recommended ? ' ⭐' : '') + '</div><div class="model-option-desc">' + m.desc + '</div>';
+    div.onclick = function() { selectedModel = m.id; renderModelList(); };
     list.appendChild(div);
-  }
+  });
 }
 
-function esc(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
-
-function addMessage(text, role, sources = []) {
+function addMessage(text, role, sources) {
+  sources = sources || [];
   $('welcome').style.display = 'none';
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-  let html = `<div class="msg-bubble">${esc(text)}</div>`;
-  for (const s of sources) {
-    const srcId = 'src_' + Math.random().toString(36).slice(2);
-    html += `<div class="msg-source" onclick="document.getElementById('${srcId}').classList.toggle('open')">
-      <div class="msg-source-label">📖 ${esc(s.source)} — p.${s.page}</div>
-      <div class="msg-source-text">${esc(s.text.slice(0, 150))}...</div>
-      <div class="source-expand" id="${srcId}">${esc(s.text)}</div>
-    </div>`;
-  }
+  var div = document.createElement('div'); div.className = 'msg ' + role;
+  var html = '<div class="msg-bubble">' + esc(text) + '</div>';
+  sources.forEach(function(s) {
+    var srcId = 'src_' + Math.random().toString(36).slice(2);
+    html += '<div class="msg-source" onclick="document.getElementById(\'' + srcId + '\').classList.toggle(\'open\')"><div class="msg-source-label">📖 ' + esc(s.source) + ' — p.' + s.page + '</div><div class="msg-source-text">' + esc(s.text.slice(0,150)) + '...</div><div class="source-expand" id="' + srcId + '">' + esc(s.text) + '</div></div>';
+  });
   div.innerHTML = html;
   $('chatArea').appendChild(div);
   $('chatArea').scrollTop = $('chatArea').scrollHeight;
 }
 
 function addTyping() {
-  const div = document.createElement('div');
-  div.className = 'msg ai'; div.id = 'typing';
-  div.innerHTML = `<div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-  $('chatArea').appendChild(div);
-  $('chatArea').scrollTop = $('chatArea').scrollHeight;
+  var div = document.createElement('div'); div.className = 'msg ai'; div.id = 'typing';
+  div.innerHTML = '<div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  $('chatArea').appendChild(div); $('chatArea').scrollTop = $('chatArea').scrollHeight;
 }
-function removeTyping() { const el = $('typing'); if (el) el.remove(); }
+function removeTyping() { var el = $('typing'); if (el) el.remove(); }
 
 // ── Query ──
-async function handleQuery(query) {
+function handleQuery(query) {
   if (!query.trim() || isGenerating) return;
   isGenerating = true; updateStatus();
   addMessage(query, 'user');
   $('inputField').value = ''; autoResize();
 
-  const results = bm25.search(query, 5);
-
+  var results = bm25.search(query, 5);
   if (results.length === 0) {
-    addMessage("Couldn't find anything matching that in the loaded manuals. Try rephrasing or check that the relevant section is imported.", 'ai');
+    addMessage("Couldn't find anything matching that. Try rephrasing or check the manual is imported.", 'ai');
     isGenerating = false; updateStatus(); return;
   }
 
   if (mode === 'search' || !engine) {
-    let answer = '';
-    for (const r of results) {
-      answer += `━━ ${r.source} p.${r.page} ━━\n${r.text.trim()}\n\n`;
-    }
+    var answer = '';
+    results.forEach(function(r) { answer += '━━ ' + r.source + ' p.' + r.page + ' ━━\n' + r.text.trim() + '\n\n'; });
     addMessage(answer.trim(), 'ai', results.slice(0, 3));
+    isGenerating = false; updateStatus();
   } else {
     addTyping();
-    const context = results.slice(0, 3).map((r, i) =>
-      `[Source ${i+1}: ${r.source}, Page ${r.page}]\n${r.text}`
-    ).join('\n\n');
-
-    const prompt = `You are an expert A321 technical reference assistant for an airline pilot. Answer the question using ONLY the provided manual excerpts. Be precise with numbers, limitations, and procedures. Always cite the source and page. If the excerpts don't contain the answer, say so clearly.
-
-MANUAL EXCERPTS:
-${context}
-
-QUESTION: ${query}
-
-ANSWER:`;
-
-    try {
-      const reply = await engine.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 800, temperature: 0.1
-      });
+    var context = results.slice(0,3).map(function(r,i) { return '[Source '+(i+1)+': '+r.source+', Page '+r.page+']\n'+r.text; }).join('\n\n');
+    var prompt = 'You are an expert A321 technical reference assistant for an airline pilot. Answer using ONLY the provided manual excerpts. Be precise with numbers, limitations, and procedures. Cite the source and page. If the excerpts don\'t contain the answer, say so.\n\nMANUAL EXCERPTS:\n' + context + '\n\nQUESTION: ' + query + '\n\nANSWER:';
+    engine.chat.completions.create({ messages: [{ role: 'user', content: prompt }], max_tokens: 800, temperature: 0.1 }).then(function(reply) {
       removeTyping();
-      addMessage(reply.choices[0]?.message?.content || 'No response.', 'ai', results.slice(0, 3));
-    } catch (err) {
+      addMessage(reply.choices[0].message.content || 'No response.', 'ai', results.slice(0,3));
+      isGenerating = false; updateStatus();
+    }).catch(function(err) {
       removeTyping();
-      let fallback = '';
-      for (const r of results) fallback += `${r.source} p.${r.page}:\n${r.text.slice(0, 300)}\n\n`;
-      addMessage(`Model error: ${err.message}\n\nShowing search results instead:\n\n${fallback.trim()}`, 'ai', results.slice(0, 3));
-    }
-  }
-  isGenerating = false; updateStatus();
-}
-
-// ── Model Loading ──
-async function loadModel(modelId) {
-  const status = $('modelStatus'), progress = $('modelProgress'), fill = $('modelProgressFill');
-  $('btnLoadModel').disabled = true;
-  progress.style.display = 'block';
-  status.textContent = 'Loading WebLLM...';
-  $('statusDot').className = 'status-dot blue';
-  $('statusText').textContent = 'Downloading AI model...';
-
-  try {
-    const webllm = await import('https://esm.run/@mlc-ai/web-llm');
-    status.textContent = 'Downloading model (first time only)...';
-    engine = await webllm.CreateMLCEngine(modelId, {
-      initProgressCallback: (info) => {
-        const pct = Math.round((info.progress || 0) * 100);
-        fill.style.width = pct + '%';
-        status.textContent = info.text || `Downloading... ${pct}%`;
-        $('statusText').textContent = info.text || `Downloading... ${pct}%`;
-      }
+      var fb = ''; results.forEach(function(r){fb += r.source+' p.'+r.page+':\n'+r.text.slice(0,300)+'\n\n';});
+      addMessage('Model error. Search results:\n\n' + fb.trim(), 'ai', results.slice(0,3));
+      isGenerating = false; updateStatus();
     });
-    mode = 'ai';
-    await dbPut('config', { key: 'model', value: modelId });
-    await dbPut('config', { key: 'mode', value: 'ai' });
-    status.textContent = '✅ Model loaded! Fully offline now.';
-    progress.style.display = 'none';
-    updateStatus(); updateWelcomeSteps();
-    setTimeout(() => $('modelPanel').classList.remove('open'), 800);
-  } catch (err) {
-    status.textContent = `❌ ${err.message}`;
-    if (err.message && err.message.toLowerCase().includes('webgpu')) {
-      status.textContent = '❌ WebGPU not available. Use search-only mode or update Safari.';
-    }
-    progress.style.display = 'none';
-    $('btnLoadModel').disabled = false;
-    $('statusDot').className = 'status-dot red';
-    updateStatus();
   }
 }
 
-// ── Input ──
 function autoResize() {
   $('inputField').style.height = 'auto';
   $('inputField').style.height = Math.min($('inputField').scrollHeight, 120) + 'px';
 }
 
-$('inputField').addEventListener('input', () => {
+// ── Events ──
+$('inputField').addEventListener('input', function() {
   autoResize();
   $('sendBtn').disabled = !$('inputField').value.trim() || !manuals.length || isGenerating;
 });
-$('inputField').addEventListener('keydown', (e) => {
+$('inputField').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleQuery($('inputField').value); }
 });
-$('sendBtn').addEventListener('click', () => handleQuery($('inputField').value));
+$('sendBtn').addEventListener('click', function() { handleQuery($('inputField').value); });
 
-// ── Panel toggles ──
-$('btnManuals').onclick = () => { renderManualsList(); $('manualsPanel').classList.add('open'); };
-$('closeManualsPanel').onclick = () => $('manualsPanel').classList.remove('open');
-$('manualsPanel').onclick = (e) => { if (e.target === $('manualsPanel')) $('manualsPanel').classList.remove('open'); };
-$('btnModel').onclick = () => { renderModelList(); $('modelPanel').classList.add('open'); };
-$('closeModelPanel').onclick = () => $('modelPanel').classList.remove('open');
-$('modelPanel').onclick = (e) => { if (e.target === $('modelPanel')) $('modelPanel').classList.remove('open'); };
+$('btnManuals').onclick = function() { renderManualsList(); $('manualsPanel').classList.add('open'); };
+$('closeManualsPanel').onclick = function() { $('manualsPanel').classList.remove('open'); };
+$('manualsPanel').onclick = function(e) { if (e.target === $('manualsPanel')) $('manualsPanel').classList.remove('open'); };
+$('btnModel').onclick = function() { renderModelList(); $('modelPanel').classList.add('open'); };
+$('closeModelPanel').onclick = function() { $('modelPanel').classList.remove('open'); };
+$('modelPanel').onclick = function(e) { if (e.target === $('modelPanel')) $('modelPanel').classList.remove('open'); };
 
-// ── File Import ──
-$('fileDrop').onclick = () => $('fileInput').click();
-$('fileInput').addEventListener('change', async (e) => {
-  const files = e.target.files;
-  const ocrStatus = $('ocrStatus');
-  const ocrProgress = $('ocrProgress');
-  const ocrFill = $('ocrProgressFill');
-  const importStatus = $('importStatus');
-
-  for (const file of files) {
-    const fname = file.name;
-    const baseName = fname.replace(/\.[^.]+$/, '');
+// File import
+$('fileDrop').onclick = function() { $('fileInput').click(); };
+$('fileInput').addEventListener('change', function(e) {
+  var files = e.target.files;
+  var processFiles = function(idx) {
+    if (idx >= files.length) { rebuildIndex(); $('fileInput').value = ''; return; }
+    var file = files[idx], fname = file.name, baseName = fname.replace(/\.[^.]+$/, '');
 
     if (fname.endsWith('.json')) {
-      // JSON from OCR script
-      ocrStatus.textContent = `Importing ${fname}...`;
-      try {
-        const data = JSON.parse(await file.text());
-        const manual = await importManual(
-          data.source || baseName,
-          data.pages || [{ page: 1, text: typeof data === 'string' ? data : JSON.stringify(data) }],
-          data.total_pages || 1,
-          fname
-        );
-        importStatus.innerHTML = `<p style="color:var(--accent)">✅ ${manual.name}: ${manual.chunkCount} chunks</p>`;
-      } catch (err) {
-        importStatus.innerHTML = `<p style="color:var(--red)">❌ ${fname}: ${err.message}</p>`;
-      }
-      ocrStatus.textContent = '';
+      $('ocrStatus').textContent = 'Importing ' + fname + '...';
+      file.text().then(function(t) {
+        var data = JSON.parse(t);
+        var pages = data.pages || [{ page: 1, text: typeof data === 'string' ? data : JSON.stringify(data) }];
+        return importManual(data.source || baseName, pages, data.total_pages || 1, fname);
+      }).then(function(m) {
+        $('importStatus').innerHTML = '<p style="color:var(--accent)">✅ ' + m.name + ': ' + m.chunkCount + ' chunks</p>';
+        $('ocrStatus').textContent = ''; processFiles(idx + 1);
+      }).catch(function(err) {
+        $('importStatus').innerHTML = '<p style="color:var(--red)">❌ ' + fname + ': ' + err.message + '</p>';
+        processFiles(idx + 1);
+      });
 
     } else if (fname.endsWith('.txt')) {
-      // Plain text
-      const text = await file.text();
-      const manual = await importManual(baseName, [{ page: 1, text }], 1, fname);
-      importStatus.innerHTML = `<p style="color:var(--accent)">✅ ${manual.name}: ${manual.chunkCount} chunks</p>`;
+      file.text().then(function(t) {
+        return importManual(baseName, [{ page: 1, text: t }], 1, fname);
+      }).then(function(m) {
+        $('importStatus').innerHTML = '<p style="color:var(--accent)">✅ ' + m.name + ': ' + m.chunkCount + ' chunks</p>';
+        processFiles(idx + 1);
+      });
 
     } else if (fname.endsWith('.pdf')) {
-      // PDF — extract text or OCR
-      ocrProgress.style.display = 'block';
-      ocrStatus.textContent = `Processing ${fname}...`;
-
-      try {
-        const result = await extractPDF(file, (current, total, msg) => {
-          const pct = Math.round(current / total * 100);
-          ocrFill.style.width = pct + '%';
-          ocrStatus.textContent = `${fname}: ${msg} (${current}/${total})`;
-        });
-
-        const manual = await importManual(baseName, result.pages, result.totalPages, fname);
-        importStatus.innerHTML = `<p style="color:var(--accent)">✅ ${manual.name}: ${manual.chunkCount} chunks from ${result.pages.length} pages</p>`;
-      } catch (err) {
-        importStatus.innerHTML = `<p style="color:var(--red)">❌ ${fname}: ${err.message}</p>`;
-      }
-      ocrProgress.style.display = 'none';
-      ocrStatus.textContent = '';
-    }
-  }
-
-  await rebuildIndex();
-  $('fileInput').value = '';
+      $('ocrProgress').style.display = 'block';
+      $('ocrStatus').textContent = 'Processing ' + fname + '...';
+      extractPDF(file, function(current, total, msg) {
+        var pct = Math.round(current / total * 100);
+        $('ocrProgressFill').style.width = pct + '%';
+        $('ocrStatus').textContent = fname + ': ' + msg + ' (' + current + '/' + total + ')';
+      }).then(function(result) {
+        return importManual(baseName, result.pages, result.totalPages, fname);
+      }).then(function(m) {
+        $('importStatus').innerHTML = '<p style="color:var(--accent)">✅ ' + m.name + ': ' + m.chunkCount + ' chunks</p>';
+        $('ocrProgress').style.display = 'none'; $('ocrStatus').textContent = '';
+        processFiles(idx + 1);
+      }).catch(function(err) {
+        $('importStatus').innerHTML = '<p style="color:var(--red)">❌ ' + fname + ': ' + err.message + '</p>';
+        $('ocrProgress').style.display = 'none'; processFiles(idx + 1);
+      });
+    } else { processFiles(idx + 1); }
+  };
+  processFiles(0);
 });
 
-// Paste import
-$('pasteImport').onclick = async () => {
-  const label = $('pasteLabel').value.trim();
-  const text = $('pasteArea').value.trim();
+// Paste
+$('pasteImport').onclick = function() {
+  var label = $('pasteLabel').value.trim(), text = $('pasteArea').value.trim();
   if (!label || !text) return;
-  const manual = await importManual(label, [{ page: 1, text }], 1, label);
-  $('pasteLabel').value = ''; $('pasteArea').value = '';
-  $('importStatus').innerHTML = `<p style="color:var(--accent)">✅ ${manual.name}: ${manual.chunkCount} chunks</p>`;
-  await rebuildIndex();
+  importManual(label, [{ page: 1, text: text }], 1, label).then(function(m) {
+    $('pasteLabel').value = ''; $('pasteArea').value = '';
+    $('importStatus').innerHTML = '<p style="color:var(--accent)">✅ ' + m.name + ': ' + m.chunkCount + ' chunks</p>';
+    rebuildIndex();
+  });
 };
 
-// Clear all
-$('btnClearAll').onclick = async () => {
+// Clear
+$('btnClearAll').onclick = function() {
   if (!confirm('Delete all imported manuals?')) return;
-  await dbClearStore('manuals');
-  await dbClearStore('chunks');
-  await rebuildIndex();
-  $('importStatus').innerHTML = `<p style="color:var(--muted)">All manuals cleared.</p>`;
+  dbClearStore('manuals').then(function() { return dbClearStore('chunks'); }).then(rebuildIndex);
 };
 
-// Model buttons
-$('btnLoadModel').onclick = () => loadModel(selectedModel);
-$('btnSearchOnly').onclick = async () => {
-  mode = 'search';
-  await dbPut('config', { key: 'mode', value: 'search' });
-  updateStatus(); updateWelcomeSteps();
-  $('modelPanel').classList.remove('open');
+// Model
+$('btnLoadModel').onclick = function() {
+  var status = $('modelStatus'), progress = $('modelProgress'), fill = $('modelProgressFill');
+  $('btnLoadModel').disabled = true; progress.style.display = 'block';
+  status.textContent = 'Loading WebLLM...';
+  $('statusDot').className = 'status-dot blue'; $('statusText').textContent = 'Downloading AI model...';
+  import('https://esm.run/@mlc-ai/web-llm').then(function(webllm) {
+    status.textContent = 'Downloading model...';
+    return webllm.CreateMLCEngine(selectedModel, {
+      initProgressCallback: function(info) {
+        var pct = Math.round((info.progress || 0) * 100);
+        fill.style.width = pct + '%';
+        status.textContent = info.text || ('Downloading... ' + pct + '%');
+        $('statusText').textContent = info.text || ('Downloading... ' + pct + '%');
+      }
+    });
+  }).then(function(eng) {
+    engine = eng; mode = 'ai';
+    dbPut('config', { key: 'model', value: selectedModel });
+    dbPut('config', { key: 'mode', value: 'ai' });
+    status.textContent = '✅ Model loaded!'; progress.style.display = 'none';
+    updateStatus(); updateWelcomeSteps();
+    setTimeout(function() { $('modelPanel').classList.remove('open'); }, 800);
+  }).catch(function(err) {
+    status.textContent = '❌ ' + err.message; progress.style.display = 'none';
+    $('btnLoadModel').disabled = false; updateStatus();
+  });
+};
+
+$('btnSearchOnly').onclick = function() {
+  mode = 'search'; dbPut('config', { key: 'mode', value: 'search' });
+  updateStatus(); updateWelcomeSteps(); $('modelPanel').classList.remove('open');
 };
 
 // ── Init ──
-async function init() {
-  await openDB();
-  await rebuildIndex();
-  const savedMode = await dbGet('config', 'mode');
-  if (savedMode) mode = savedMode.value;
-  if (mode === 'ai') {
-    const savedModel = await dbGet('config', 'model');
-    if (savedModel) {
-      selectedModel = savedModel.value;
-      try {
-        $('statusDot').className = 'status-dot blue';
-        $('statusText').textContent = 'Loading AI model from cache...';
-        const webllm = await import('https://esm.run/@mlc-ai/web-llm');
-        engine = await webllm.CreateMLCEngine(selectedModel, {
-          initProgressCallback: (info) => { $('statusText').textContent = info.text || 'Loading...'; }
-        });
-      } catch { mode = 'search'; }
-    }
-  }
+rebuildIndex().then(function() {
+  return dbGet('config', 'mode');
+}).then(function(saved) {
+  if (saved) mode = saved.value;
   updateStatus(); updateWelcomeSteps(); renderModelList();
-}
+});
 
-init();
+}); // end window.load
 </script>
 </body>
 </html>
