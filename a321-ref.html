@@ -292,13 +292,8 @@ body {
   </div>
 </div>
 
-<!-- Load PDF.js and Tesseract.js from CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.min.mjs" type="module"></script>
-<script>
-// Globals for libraries loaded below
-window.pdfjsReady = false;
-window.tesseractReady = false;
-</script>
+<!-- Load Tesseract.js globally -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <script type="module">
 // ═══════════════════════════════════════════
@@ -461,11 +456,7 @@ function chunkText(text, source, page, chunkSize = 400) {
 // ── PDF OCR Pipeline ──
 async function initTesseract() {
   if (tesseractWorker) return tesseractWorker;
-  const Tess = await import('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.esm.min.js');
-  tesseractWorker = await Tess.createWorker('eng', 1, {
-    workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
-    corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core-simd-lstm.wasm.js',
-  });
+  tesseractWorker = await Tesseract.createWorker('eng');
   return tesseractWorker;
 }
 
