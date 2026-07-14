@@ -25,12 +25,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .msg-bubble{padding:12px 14px;border-radius:14px;font-size:15px;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
 .msg.user .msg-bubble{background:var(--accent);color:#0a0e14;border-bottom-right-radius:4px;font-weight:500}
 .msg.ai .msg-bubble{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg-source{margin-top:8px;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:'SF Mono',monospace;font-size:12px;color:var(--muted);cursor:pointer}
-.msg-source:active{background:var(--surface2);border-color:var(--accent)}
-.msg-source-label{color:var(--accent);font-weight:600;margin-bottom:4px}
-.msg-source-text{color:var(--text);opacity:0.8;line-height:1.4}
-.source-expand{display:none;margin-top:8px;padding:10px;background:var(--bg);border-radius:6px;font-size:13px;line-height:1.5;color:var(--text);white-space:pre-wrap;max-height:200px;overflow-y:auto}
-.source-expand.open{display:block}
+.msg-ref{margin-top:6px;padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'SF Mono',monospace;font-size:12px;color:var(--accent);cursor:pointer;display:inline-block}
+.msg-ref:active{background:var(--accent-dim)}
+.ref-detail{display:none;margin-top:6px;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:13px;line-height:1.4;color:var(--text);white-space:pre-wrap;max-height:180px;overflow-y:auto;font-family:-apple-system,system-ui,sans-serif}
+.ref-detail.open{display:block}
 .input-area{padding:12px 16px;padding-bottom:max(12px,var(--safe-b));background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
 .input-row{display:flex;gap:8px;align-items:flex-end}
 .input-field{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 16px;color:var(--text);font-size:16px;font-family:inherit;outline:none;resize:none;max-height:120px;line-height:1.4}
@@ -42,48 +40,53 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .status-bar{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12px;color:var(--muted);background:var(--surface);border-top:1px solid var(--border)}
 .status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .status-dot.green{background:var(--accent);box-shadow:0 0 6px var(--accent)}
-.status-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.status-dot.amber{background:var(--amber)}
 .status-dot.red{background:var(--red)}
 .status-dot.blue{background:var(--blue);animation:pulse 1.5s infinite}
 .panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:none;animation:fadeIn .15s}
 .panel-overlay.open{display:flex;align-items:flex-end;justify-content:center}
 .panel{background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-width:500px;max-height:85dvh;padding:20px;padding-bottom:max(20px,var(--safe-b));overflow-y:auto;animation:slideUp .25s ease}
-.panel h2{font-size:18px;font-weight:700;margin-bottom:16px;color:var(--text)}
+.panel h2{font-size:18px;font-weight:700;margin-bottom:16px}
 .panel h3{font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--accent)}
 .panel p{font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:12px}
-.panel-close{float:right;background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;padding:0 4px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:600;border:none;cursor:pointer;width:100%;margin-bottom:8px}
+.panel-close{float:right;background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:600;border:none;cursor:pointer;width:100%;margin-bottom:8px}
 .btn-primary{background:var(--accent);color:#0a0e14}
-.btn-primary:active{opacity:0.8}
 .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
-.btn-secondary:active{background:var(--border)}
 .btn-danger{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
 .btn:disabled{opacity:0.4;pointer-events:none}
+.type-btns{display:flex;gap:8px;margin-bottom:12px}
+.type-btn{flex:1;padding:10px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'SF Mono',monospace;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
+.type-btn.sel{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
 .file-drop{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;margin-bottom:12px}
 .file-drop:active{border-color:var(--accent);background:var(--accent-dim)}
 .manual-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px;border:1px solid var(--border)}
 .manual-item-info{flex:1}
-.manual-item-name{font-size:14px;font-weight:600}
+.manual-item-name{font-size:13px;font-weight:600;font-family:'SF Mono',monospace;color:var(--accent)}
 .manual-item-meta{font-size:12px;color:var(--muted);margin-top:2px}
 .manual-item-del{background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;padding:4px 8px}
 .progress-bar{height:6px;background:var(--surface2);border-radius:3px;margin:12px 0;overflow:hidden}
 .progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
 .model-option{padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer}
-.model-option:active,.model-option.selected{border-color:var(--accent);background:var(--accent-dim)}
+.model-option.selected{border-color:var(--accent);background:var(--accent-dim)}
 .model-option-name{font-size:14px;font-weight:600}
 .model-option-desc{font-size:12px;color:var(--muted);margin-top:2px}
 .welcome{padding:32px 16px;text-align:center}
 .welcome h2{font-size:22px;font-weight:700;margin:16px 0 8px}
 .welcome p{font-size:14px;color:var(--muted);line-height:1.5;max-width:320px;margin:0 auto 24px}
 .welcome-steps{text-align:left;max-width:320px;margin:0 auto}
-.welcome-step{display:flex;gap:12px;margin-bottom:16px;align-items:flex-start}
+.welcome-step{display:flex;gap:12px;margin-bottom:16px}
 .welcome-step-num{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:var(--accent-dim);color:var(--accent);font-family:monospace;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .welcome-step-num.done{background:var(--accent);color:#0a0e14}
-.welcome-step-text{font-size:14px;color:var(--text);line-height:1.4;padding-top:3px}
+.welcome-step-text{font-size:14px;line-height:1.4;padding-top:3px}
 .welcome-step-text small{color:var(--muted);display:block;margin-top:2px}
 .typing-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);margin:0 2px;animation:bounce .6s infinite alternate}
 .typing-dots span:nth-child(2){animation-delay:.15s}
 .typing-dots span:nth-child(3){animation-delay:.3s}
+.tag-input{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--accent);font-size:14px;outline:none;font-family:'SF Mono',monospace;margin-bottom:8px;text-transform:uppercase}
+.tag-input::placeholder{color:var(--muted);text-transform:none}
+.ref-preview{font-size:12px;color:var(--muted);margin-bottom:12px;font-family:'SF Mono',monospace}
+.ref-preview span{color:var(--accent)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes bounce{to{transform:translateY(-4px);opacity:0.4}}
@@ -95,8 +98,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
   <div class="header">
     <div><h1>A321 REF <span class="header-sub">FCOM · FCTM · MANOPS</span></h1></div>
     <div class="header-actions">
-      <button class="icon-btn" id="btnManuals" title="Manuals">📄</button>
-      <button class="icon-btn" id="btnModel" title="AI Model">🤖</button>
+      <button class="icon-btn" id="btnManuals">📄</button>
+      <button class="icon-btn" id="btnModel">🤖</button>
     </div>
   </div>
   <div class="chat-area" id="chatArea">
@@ -105,9 +108,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
       <h2>A321 Reference AI</h2>
       <p>Offline AI for your FCOM, FCTM &amp; MANOPS. Everything stays on your device.</p>
       <div class="welcome-steps">
-        <div class="welcome-step"><div class="welcome-step-num" id="step1num">1</div><div class="welcome-step-text">Import your manuals<small>PDF, JSON, or text files</small></div></div>
-        <div class="welcome-step"><div class="welcome-step-num" id="step2num">2</div><div class="welcome-step-text">Download AI model (optional)<small>Or use search-only mode — no download needed</small></div></div>
-        <div class="welcome-step"><div class="welcome-step-num" id="step3num">3</div><div class="welcome-step-text">Ask anything about the A321<small>Works offline after setup</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step1num">1</div><div class="welcome-step-text">Import your manuals<small>Tag each section (e.g. FCOM-LIM-ENG-OIL)</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step2num">2</div><div class="welcome-step-text">Download AI model (optional)<small>Or use search-only mode</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step3num">3</div><div class="welcome-step-text">Ask anything about the A321<small>Precise answers with exact references</small></div></div>
       </div>
     </div>
   </div>
@@ -121,20 +124,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 <!-- Manuals Panel -->
 <div class="panel-overlay" id="manualsPanel"><div class="panel">
   <button class="panel-close" id="closeManualsPanel">&times;</button>
-  <h2>📄 Manuals</h2>
+  <h2>📄 Import Manuals</h2>
+  <h3>1. Select manual</h3>
+  <div class="type-btns">
+    <div class="type-btn sel" data-type="FCOM">FCOM</div>
+    <div class="type-btn" data-type="FCTM">FCTM</div>
+    <div class="type-btn" data-type="MANOPS">MANOPS</div>
+  </div>
+  <h3>2. Section tag</h3>
+  <input type="text" class="tag-input" id="sectionTag" placeholder="e.g. LIM-ENG-OIL or DSC-21">
+  <div class="ref-preview">Reference: <span id="refPreview">FCOM</span></div>
+  <h3>3. Upload file</h3>
   <div class="file-drop" id="fileDrop">
     <div style="font-size:32px;margin-bottom:8px">📁</div>
-    <div style="font-size:14px;color:var(--muted)">Tap to import PDFs or text files<br><small>Scanned PDFs are OCR'd on-device</small></div>
+    <div style="font-size:14px;color:var(--muted)">Tap to import PDF, JSON, or text<br><small>Scanned PDFs are OCR'd on-device</small></div>
     <input type="file" id="fileInput" accept=".pdf,.json,.txt" multiple style="display:none">
   </div>
   <div class="progress-bar" id="ocrProgress" style="display:none"><div class="progress-fill" id="ocrProgressFill" style="width:0%"></div></div>
   <div id="ocrStatus" style="font-size:13px;color:var(--muted);margin-bottom:12px"></div>
-  <div id="manualsList"></div>
   <div id="importStatus"></div>
+  <div id="manualsList"></div>
   <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
-  <h3>Or paste text directly</h3>
-  <p>Copy text from a manual and paste it here.</p>
-  <input type="text" id="pasteLabel" placeholder="e.g. FCOM Limitations" style="width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;margin-bottom:8px;outline:none">
+  <h3>Or paste text</h3>
   <textarea id="pasteArea" placeholder="Paste manual text here..." style="width:100%;height:100px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;outline:none;resize:vertical;margin-bottom:8px"></textarea>
   <button class="btn btn-secondary" id="pasteImport">Import pasted text</button>
   <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
@@ -152,508 +163,350 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
   <button class="btn btn-primary" id="btnLoadModel">Download &amp; Load Model</button>
   <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
   <h3>Search-only mode</h3>
-  <p>No download. Finds and shows exact manual text. Faster and always accurate.</p>
+  <p>No download. Finds exact manual text. Faster and always accurate.</p>
   <button class="btn btn-secondary" id="btnSearchOnly">Use search-only mode</button>
 </div></div>
 
-<!-- Libraries: PDF.js + Tesseract.js loaded as regular scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
 <script>
-// Wait for libs to load
 window.addEventListener('load', function() {
 
-// PDF.js worker
-if (window.pdfjsLib) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-}
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ── IndexedDB ──
-var DB_NAME = 'a321ref', DB_VER = 3;
-function openDB() {
-  return new Promise(function(resolve, reject) {
-    var req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = function() {
-      var db = req.result;
-      if (!db.objectStoreNames.contains('manuals')) db.createObjectStore('manuals', { keyPath: 'id' });
-      if (!db.objectStoreNames.contains('chunks')) db.createObjectStore('chunks', { keyPath: 'id' });
-      if (!db.objectStoreNames.contains('config')) db.createObjectStore('config', { keyPath: 'key' });
-    };
-    req.onsuccess = function() { resolve(req.result); };
-    req.onerror = function() { reject(req.error); };
-  });
-}
-function dbPut(store, data) {
-  return openDB().then(function(db) {
-    return new Promise(function(res, rej) {
-      var tx = db.transaction(store, 'readwrite');
-      tx.objectStore(store).put(data);
-      tx.oncomplete = function() { res(); };
-      tx.onerror = function() { rej(tx.error); };
-    });
-  });
-}
-function dbGetAll(store) {
-  return openDB().then(function(db) {
-    return new Promise(function(res, rej) {
-      var tx = db.transaction(store, 'readonly');
-      var req = tx.objectStore(store).getAll();
-      req.onsuccess = function() { res(req.result); };
-      req.onerror = function() { rej(req.error); };
-    });
-  });
-}
-function dbGet(store, key) {
-  return openDB().then(function(db) {
-    return new Promise(function(res, rej) {
-      var tx = db.transaction(store, 'readonly');
-      var req = tx.objectStore(store).get(key);
-      req.onsuccess = function() { res(req.result); };
-      req.onerror = function() { rej(req.error); };
-    });
-  });
-}
-function dbDelete(store, key) {
-  return openDB().then(function(db) {
-    return new Promise(function(res, rej) {
-      var tx = db.transaction(store, 'readwrite');
-      tx.objectStore(store).delete(key);
-      tx.oncomplete = function() { res(); };
-      tx.onerror = function() { rej(tx.error); };
-    });
-  });
-}
-function dbClearStore(store) {
-  return openDB().then(function(db) {
-    return new Promise(function(res, rej) {
-      var tx = db.transaction(store, 'readwrite');
-      tx.objectStore(store).clear();
-      tx.oncomplete = function() { res(); };
-      tx.onerror = function() { rej(tx.error); };
-    });
-  });
-}
+// ── DB ──
+var DB='a321ref',DBV=4;
+function openDB(){return new Promise(function(ok,no){var r=indexedDB.open(DB,DBV);r.onupgradeneeded=function(){var d=r.result;if(!d.objectStoreNames.contains('manuals'))d.createObjectStore('manuals',{keyPath:'id'});if(!d.objectStoreNames.contains('chunks'))d.createObjectStore('chunks',{keyPath:'id'});if(!d.objectStoreNames.contains('config'))d.createObjectStore('config',{keyPath:'key'});};r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})}
+function dbPut(s,d){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readwrite');tx.objectStore(s).put(d);tx.oncomplete=ok;tx.onerror=function(){no(tx.error)}})})}
+function dbGetAll(s){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readonly');var r=tx.objectStore(s).getAll();r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})})}
+function dbGet(s,k){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readonly');var r=tx.objectStore(s).get(k);r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})})}
+function dbDelete(s,k){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readwrite');tx.objectStore(s).delete(k);tx.oncomplete=ok;tx.onerror=function(){no(tx.error)}})})}
+function dbClear(s){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readwrite');tx.objectStore(s).clear();tx.oncomplete=ok;tx.onerror=function(){no(tx.error)}})})}
 
 // ── BM25 ──
-function BM25(k1, b) {
-  this.k1 = k1 || 1.5; this.b = b || 0.75;
-  this.docs = []; this.avgdl = 0; this.idf = {};
-  this.docFreq = {}; this.docTermFreqs = []; this.docLengths = [];
-}
-BM25.prototype.tokenize = function(text) {
-  return text.toLowerCase().replace(/[^a-z0-9\s.\/-]/g, ' ').split(/\s+/).filter(function(t) { return t.length > 1; });
+function BM25(k1,b){this.k1=k1||1.5;this.b=b||0.75;this.docs=[];this.avgdl=0;this.idf={};this.df={};this.tfs=[];this.dls=[]}
+BM25.prototype.tok=function(t){return t.toLowerCase().replace(/[^a-z0-9\s.\/-]/g,' ').split(/\s+/).filter(function(w){return w.length>1})};
+BM25.prototype.build=function(docs){
+  this.docs=docs;var N=docs.length;this.tfs=[];this.dls=[];this.df={};
+  for(var d=0;d<N;d++){var toks=this.tok(docs[d].text);this.dls.push(toks.length);var tf={},seen={};
+    for(var i=0;i<toks.length;i++){var t=toks[i];tf[t]=(tf[t]||0)+1;if(!seen[t]){this.df[t]=(this.df[t]||0)+1;seen[t]=1}}this.tfs.push(tf)}
+  this.avgdl=this.dls.reduce(function(a,b){return a+b},0)/(N||1);this.idf={};var self=this;
+  Object.keys(this.df).forEach(function(t){self.idf[t]=Math.log((N-self.df[t]+0.5)/(self.df[t]+0.5)+1)})
 };
-BM25.prototype.buildIndex = function(docs) {
-  this.docs = docs; var N = docs.length;
-  this.docTermFreqs = []; this.docLengths = []; this.docFreq = {};
-  for (var d = 0; d < docs.length; d++) {
-    var tokens = this.tokenize(docs[d].text);
-    this.docLengths.push(tokens.length);
-    var tf = {}, seen = {};
-    for (var i = 0; i < tokens.length; i++) {
-      var t = tokens[i];
-      tf[t] = (tf[t] || 0) + 1;
-      if (!seen[t]) { this.docFreq[t] = (this.docFreq[t] || 0) + 1; seen[t] = true; }
-    }
-    this.docTermFreqs.push(tf);
-  }
-  this.avgdl = this.docLengths.reduce(function(a,b){return a+b;}, 0) / (N || 1);
-  this.idf = {};
-  var self = this;
-  Object.keys(this.docFreq).forEach(function(term) {
-    var df = self.docFreq[term];
-    self.idf[term] = Math.log((N - df + 0.5) / (df + 0.5) + 1);
-  });
-};
-BM25.prototype.search = function(query, topK) {
-  topK = topK || 5;
-  var qTokens = this.tokenize(query), scores = [], self = this;
-  for (var i = 0; i < this.docs.length; i++) {
-    var score = 0, dl = this.docLengths[i], tf = this.docTermFreqs[i];
-    for (var q = 0; q < qTokens.length; q++) {
-      var t = qTokens[q];
-      if (!self.idf[t]) continue;
-      var f = tf[t] || 0;
-      score += self.idf[t] * (f * (self.k1 + 1)) / (f + self.k1 * (1 - self.b + self.b * dl / self.avgdl));
-    }
-    if (score > 0) scores.push({ idx: i, score: score });
-  }
-  scores.sort(function(a,b) { return b.score - a.score; });
-  var results = [];
-  for (var s = 0; s < Math.min(topK, scores.length); s++) {
-    var doc = this.docs[scores[s].idx];
-    results.push({ text: doc.text, source: doc.source, page: doc.page, score: scores[s].score });
-  }
-  return results;
+BM25.prototype.search=function(q,topK){
+  topK=topK||5;var qt=this.tok(q),scores=[],self=this;
+  for(var i=0;i<this.docs.length;i++){var s=0,dl=this.dls[i],tf=this.tfs[i];
+    for(var j=0;j<qt.length;j++){var t=qt[j];if(!self.idf[t])continue;var f=tf[t]||0;s+=self.idf[t]*(f*(self.k1+1))/(f+self.k1*(1-self.b+self.b*dl/self.avgdl))}
+    if(s>0)scores.push({i:i,s:s})}
+  scores.sort(function(a,b){return b.s-a.s});
+  return scores.slice(0,topK).map(function(x){var d=self.docs[x.i];return{text:d.text,ref:d.ref,page:d.page,score:x.s}})
 };
 
 // ── State ──
-var engine = null, bm25 = new BM25(), allChunks = [], manuals = [];
-var mode = 'search', isGenerating = false;
-var selectedModel = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
-var tesseractWorker = null;
-
-var MODELS = [
-  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC', name: 'Llama 3.2 3B', desc: 'Best balance. ~1.8 GB.', recommended: true },
-  { id: 'Qwen2.5-3B-Instruct-q4f16_1-MLC', name: 'Qwen 2.5 3B', desc: 'Strong reasoning. ~1.8 GB.' },
-  { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', name: 'Llama 3.2 1B', desc: 'Fastest. ~0.7 GB.' },
-  { id: 'Phi-3.5-mini-instruct-q4f16_1-MLC', name: 'Phi 3.5 Mini', desc: 'Strong reasoning. ~2.2 GB.' }
+var engine=null,bm25=new BM25(),allChunks=[],manuals=[],mode='search',isGenerating=false;
+var selectedModel='Llama-3.2-3B-Instruct-q4f16_1-MLC',selectedType='FCOM';
+var MODELS=[
+  {id:'Llama-3.2-3B-Instruct-q4f16_1-MLC',name:'Llama 3.2 3B',desc:'Best balance. ~1.8 GB.',rec:true},
+  {id:'Qwen2.5-3B-Instruct-q4f16_1-MLC',name:'Qwen 2.5 3B',desc:'Strong reasoning. ~1.8 GB.'},
+  {id:'Llama-3.2-1B-Instruct-q4f16_1-MLC',name:'Llama 3.2 1B',desc:'Fastest. ~0.7 GB.'},
+  {id:'Phi-3.5-mini-instruct-q4f16_1-MLC',name:'Phi 3.5 Mini',desc:'Strong reasoning. ~2.2 GB.'}
 ];
+var $=function(id){return document.getElementById(id)};
+function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
 
-var $ = function(id) { return document.getElementById(id); };
+// Build ref string from type + section tag
+function buildRef(type, section) {
+  var r = (type || 'FCOM').toUpperCase();
+  if (section && section.trim()) r += '-' + section.trim().toUpperCase().replace(/\s+/g,'-');
+  return r;
+}
+function updateRefPreview() {
+  var tag = $('sectionTag').value;
+  $('refPreview').textContent = buildRef(selectedType, tag);
+}
 
-// ── Chunking ──
-function chunkText(text, source, page) {
-  var words = text.split(/\s+/).filter(function(w){return w.length>0;});
-  var chunks = [], chunkSize = 400, overlap = 50;
-  for (var i = 0; i < words.length; i += chunkSize - overlap) {
-    var chunk = words.slice(i, i + chunkSize).join(' ');
-    if (chunk.trim().length > 30) {
-      chunks.push({ text: chunk, source: source, page: page, id: source + '_p' + page + '_c' + chunks.length + '_' + Date.now() + Math.random() });
-    }
+// ── Chunk ──
+function chunkText(text, ref, page) {
+  var words = text.split(/\s+/).filter(function(w){return w.length>0});
+  var chunks=[], sz=400, ol=50;
+  for(var i=0;i<words.length;i+=sz-ol){
+    var c=words.slice(i,i+sz).join(' ');
+    if(c.trim().length>30) chunks.push({text:c,ref:ref,page:page,id:ref+'_p'+page+'_'+i+'_'+Date.now()+Math.random()});
   }
   return chunks;
 }
 
-// ── PDF Extract ──
-function extractPDF(file, onProgress) {
-  return new Promise(function(resolve, reject) {
-    var reader = new FileReader();
-    reader.onload = function() {
-      var typedArray = new Uint8Array(reader.result);
-      pdfjsLib.getDocument({ data: typedArray }).promise.then(function(pdf) {
-        var totalPages = pdf.numPages, pages = [], needsOCR = false;
-        var processPage = function(pageNum) {
-          if (pageNum > totalPages) {
-            if (!needsOCR) { resolve({ pages: pages.filter(function(p){return p.text.length>10;}), totalPages: totalPages }); return; }
-            // OCR pass
-            onProgress(0, totalPages, 'Starting OCR...');
-            (window.Tesseract ? Promise.resolve() : Promise.reject(new Error('Tesseract not loaded'))).then(function() {
-              var ocrPage = function(idx) {
-                if (idx >= pages.length) {
-                  resolve({ pages: pages.filter(function(p){return p.text.length>10;}), totalPages: totalPages });
-                  return;
-                }
-                if (pages[idx].text.length >= 50) { onProgress(idx+1, totalPages, 'OCR...'); ocrPage(idx+1); return; }
-                pdf.getPage(idx + 1).then(function(page) {
-                  var scale = 2;
-                  var viewport = page.getViewport({ scale: scale });
-                  var canvas = document.createElement('canvas');
-                  canvas.width = viewport.width; canvas.height = viewport.height;
-                  var ctx = canvas.getContext('2d');
-                  page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function() {
-                    Tesseract.recognize(canvas, 'eng').then(function(result) {
-                      pages[idx].text = result.data.text.trim();
-                      onProgress(idx+1, totalPages, 'OCR page ' + (idx+1) + '/' + totalPages);
-                      ocrPage(idx+1);
-                    }).catch(function(err) {
-                      console.warn('OCR failed page', idx+1, err);
-                      ocrPage(idx+1);
-                    });
-                  });
+// ── PDF ──
+function extractPDF(file,onProg){
+  return new Promise(function(ok,no){
+    var reader=new FileReader();
+    reader.onload=function(){
+      pdfjsLib.getDocument({data:new Uint8Array(reader.result)}).promise.then(function(pdf){
+        var N=pdf.numPages,pages=[],needOCR=false;
+        var proc=function(n){
+          if(n>N){
+            if(!needOCR){ok({pages:pages.filter(function(p){return p.text.length>10}),total:N});return}
+            onProg(0,N,'Starting OCR...');
+            if(!window.Tesseract){no(new Error('Tesseract not loaded'));return}
+            var ocr=function(idx){
+              if(idx>=pages.length){ok({pages:pages.filter(function(p){return p.text.length>10}),total:N});return}
+              if(pages[idx].text.length>=50){onProg(idx+1,N,'OCR...');ocr(idx+1);return}
+              pdf.getPage(idx+1).then(function(pg){
+                var vp=pg.getViewport({scale:2}),cv=document.createElement('canvas');
+                cv.width=vp.width;cv.height=vp.height;
+                pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise.then(function(){
+                  Tesseract.recognize(cv,'eng').then(function(r){
+                    pages[idx].text=r.data.text.trim();
+                    onProg(idx+1,N,'OCR page '+(idx+1)+'/'+N);ocr(idx+1);
+                  }).catch(function(){ocr(idx+1)});
                 });
-              };
-              ocrPage(0);
-            }).catch(reject);
-            return;
+              });
+            };
+            ocr(0);return;
           }
-          pdf.getPage(pageNum).then(function(page) {
-            page.getTextContent().then(function(content) {
-              var text = content.items.map(function(item){return item.str;}).join(' ').trim();
-              pages.push({ page: pageNum, text: text });
-              if (text.length < 50) needsOCR = true;
-              onProgress(pageNum, totalPages, 'Reading pages...');
-              processPage(pageNum + 1);
+          pdf.getPage(n).then(function(pg){
+            pg.getTextContent().then(function(c){
+              var t=c.items.map(function(x){return x.str}).join(' ').trim();
+              pages.push({page:n,text:t});if(t.length<50)needOCR=true;
+              onProg(n,N,'Reading...');proc(n+1);
             });
-          }).catch(function(err) {
-            pages.push({ page: pageNum, text: '' });
-            processPage(pageNum + 1);
-          });
+          }).catch(function(){pages.push({page:n,text:''});proc(n+1)});
         };
-        processPage(1);
-      }).catch(reject);
+        proc(1);
+      }).catch(no);
     };
-    reader.onerror = function() { reject(new Error('Failed to read file')); };
+    reader.onerror=function(){no(new Error('Read failed'))};
     reader.readAsArrayBuffer(file);
   });
 }
 
 // ── Import ──
-function importManual(name, pages, totalPages, filename) {
-  var manualId = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
-  var chunks = [];
-  for (var i = 0; i < pages.length; i++) {
-    var c = chunkText(pages[i].text, name, pages[i].page);
-    for (var j = 0; j < c.length; j++) chunks.push(c[j]);
-  }
-  var manual = { id: manualId, name: name, filename: filename || name, totalPages: totalPages, extractedPages: pages.length, chunkCount: chunks.length, importedAt: new Date().toISOString() };
-  return dbPut('manuals', manual).then(function() {
-    var p = Promise.resolve();
-    chunks.forEach(function(chunk) {
-      chunk.manualId = manualId;
-      p = p.then(function() { return dbPut('chunks', chunk); });
-    });
-    return p.then(function() { return manual; });
+function importManual(ref, pages, totalPages) {
+  var manualId = ref.toLowerCase().replace(/[^a-z0-9]/g,'_')+'_'+Date.now();
+  var chunks=[];
+  for(var i=0;i<pages.length;i++){var c=chunkText(pages[i].text,ref,pages[i].page);for(var j=0;j<c.length;j++)chunks.push(c[j])}
+  var manual={id:manualId,ref:ref,totalPages:totalPages,extractedPages:pages.length,chunkCount:chunks.length,importedAt:new Date().toISOString()};
+  return dbPut('manuals',manual).then(function(){
+    var p=Promise.resolve();
+    chunks.forEach(function(ch){ch.manualId=manualId;p=p.then(function(){return dbPut('chunks',ch)})});
+    return p.then(function(){return manual});
   });
 }
 
-function rebuildIndex() {
-  return dbGetAll('chunks').then(function(c) {
-    allChunks = c;
-    return dbGetAll('manuals');
-  }).then(function(m) {
-    manuals = m;
-    bm25.buildIndex(allChunks);
-    updateStatus(); updateWelcomeSteps(); renderManualsList();
+function rebuildIndex(){
+  return dbGetAll('chunks').then(function(c){allChunks=c;return dbGetAll('manuals')}).then(function(m){
+    manuals=m;bm25.build(allChunks);updateStatus();updateSteps();renderManuals();
   });
 }
 
 // ── UI ──
-function esc(text) { var d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
-
-function updateStatus() {
-  var hasDocs = manuals.length > 0;
-  if (!hasDocs) { $('statusDot').className = 'status-dot red'; $('statusText').textContent = 'No manuals loaded'; }
-  else if (mode === 'search') { $('statusDot').className = 'status-dot green'; $('statusText').textContent = 'Search mode · ' + allChunks.length + ' chunks · ' + manuals.length + ' manual' + (manuals.length>1?'s':''); }
-  else if (engine) { $('statusDot').className = 'status-dot green'; $('statusText').textContent = 'AI mode · ' + allChunks.length + ' chunks · Model loaded'; }
-  else { $('statusDot').className = 'status-dot amber'; $('statusText').textContent = allChunks.length + ' chunks · No AI model'; }
-  $('sendBtn').disabled = !hasDocs || isGenerating;
+function updateStatus(){
+  var has=manuals.length>0;
+  if(!has){$('statusDot').className='status-dot red';$('statusText').textContent='No manuals loaded'}
+  else if(mode==='search'){$('statusDot').className='status-dot green';$('statusText').textContent='Search · '+allChunks.length+' chunks · '+manuals.length+' section'+(manuals.length>1?'s':'')}
+  else if(engine){$('statusDot').className='status-dot green';$('statusText').textContent='AI · '+allChunks.length+' chunks'}
+  else{$('statusDot').className='status-dot amber';$('statusText').textContent=allChunks.length+' chunks · No model'}
+  $('sendBtn').disabled=!has||isGenerating;
 }
-
-function updateWelcomeSteps() {
-  $('step1num').className = manuals.length > 0 ? 'welcome-step-num done' : 'welcome-step-num';
-  $('step1num').textContent = manuals.length > 0 ? '✓' : '1';
-  $('step2num').className = (engine || mode === 'search') ? 'welcome-step-num done' : 'welcome-step-num';
-  $('step2num').textContent = (engine || mode === 'search') ? '✓' : '2';
+function updateSteps(){
+  $('step1num').className=manuals.length?'welcome-step-num done':'welcome-step-num';
+  $('step1num').textContent=manuals.length?'✓':'1';
+  $('step2num').className=(engine||mode==='search')?'welcome-step-num done':'welcome-step-num';
+  $('step2num').textContent=(engine||mode==='search')?'✓':'2';
 }
-
-function renderManualsList() {
-  var list = $('manualsList'); list.innerHTML = '';
-  manuals.forEach(function(m) {
-    var div = document.createElement('div'); div.className = 'manual-item';
-    div.innerHTML = '<div class="manual-item-info"><div class="manual-item-name">' + esc(m.name) + '</div><div class="manual-item-meta">' + m.chunkCount + ' chunks · ' + m.extractedPages + '/' + m.totalPages + ' pages</div></div><button class="manual-item-del" data-id="' + m.id + '">✕</button>';
+function renderManuals(){
+  var list=$('manualsList');list.innerHTML='';
+  manuals.forEach(function(m){
+    var div=document.createElement('div');div.className='manual-item';
+    div.innerHTML='<div class="manual-item-info"><div class="manual-item-name">'+esc(m.ref)+'</div><div class="manual-item-meta">'+m.chunkCount+' chunks · '+m.extractedPages+'/'+m.totalPages+' pages</div></div><button class="manual-item-del" data-id="'+m.id+'">✕</button>';
     list.appendChild(div);
   });
-  list.querySelectorAll('.manual-item-del').forEach(function(btn) {
-    btn.onclick = function() {
-      var id = btn.dataset.id;
-      dbDelete('manuals', id).then(function() { return openDB(); }).then(function(db) {
-        return new Promise(function(res) {
-          var tx = db.transaction('chunks', 'readwrite');
-          var store = tx.objectStore('chunks');
-          var req = store.getAll();
-          req.onsuccess = function() {
-            req.result.forEach(function(c) { if (c.manualId === id) store.delete(c.id); });
-            tx.oncomplete = function() { res(); };
-          };
-        });
+  list.querySelectorAll('.manual-item-del').forEach(function(btn){
+    btn.onclick=function(){
+      var id=btn.dataset.id;
+      dbDelete('manuals',id).then(function(){return openDB()}).then(function(db){
+        return new Promise(function(ok){var tx=db.transaction('chunks','readwrite'),s=tx.objectStore('chunks'),r=s.getAll();
+          r.onsuccess=function(){r.result.forEach(function(c){if(c.manualId===id)s.delete(c.id)});tx.oncomplete=ok}});
       }).then(rebuildIndex);
     };
   });
 }
-
-function renderModelList() {
-  var list = $('modelList'); list.innerHTML = '';
-  MODELS.forEach(function(m) {
-    var div = document.createElement('div');
-    div.className = 'model-option ' + (m.id === selectedModel ? 'selected' : '');
-    div.innerHTML = '<div class="model-option-name">' + m.name + (m.recommended ? ' ⭐' : '') + '</div><div class="model-option-desc">' + m.desc + '</div>';
-    div.onclick = function() { selectedModel = m.id; renderModelList(); };
-    list.appendChild(div);
+function renderModels(){
+  var list=$('modelList');list.innerHTML='';
+  MODELS.forEach(function(m){
+    var div=document.createElement('div');div.className='model-option '+(m.id===selectedModel?'selected':'');
+    div.innerHTML='<div class="model-option-name">'+m.name+(m.rec?' ⭐':'')+'</div><div class="model-option-desc">'+m.desc+'</div>';
+    div.onclick=function(){selectedModel=m.id;renderModels()};list.appendChild(div);
   });
 }
 
-function addMessage(text, role, sources) {
-  sources = sources || [];
-  $('welcome').style.display = 'none';
-  var div = document.createElement('div'); div.className = 'msg ' + role;
-  var html = '<div class="msg-bubble">' + esc(text) + '</div>';
-  sources.forEach(function(s) {
-    var srcId = 'src_' + Math.random().toString(36).slice(2);
-    html += '<div class="msg-source" onclick="document.getElementById(\'' + srcId + '\').classList.toggle(\'open\')"><div class="msg-source-label">📖 ' + esc(s.source) + ' — p.' + s.page + '</div><div class="msg-source-text">' + esc(s.text.slice(0,150)) + '...</div><div class="source-expand" id="' + srcId + '">' + esc(s.text) + '</div></div>';
-  });
-  div.innerHTML = html;
-  $('chatArea').appendChild(div);
-  $('chatArea').scrollTop = $('chatArea').scrollHeight;
+// ── Messages ──
+function addMsg(text, role, refs) {
+  refs=refs||[];
+  $('welcome').style.display='none';
+  var div=document.createElement('div');div.className='msg '+role;
+  var html='<div class="msg-bubble">'+esc(text)+'</div>';
+  if(refs.length){
+    html+='<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">';
+    refs.forEach(function(r){
+      var rid='r_'+Math.random().toString(36).slice(2);
+      html+='<div style="display:inline-block"><div class="msg-ref" onclick="document.getElementById(\''+rid+'\').classList.toggle(\'open\')">📖 '+esc(r.ref)+' p.'+r.page+'</div><div class="ref-detail" id="'+rid+'">'+esc(r.text)+'</div></div>';
+    });
+    html+='</div>';
+  }
+  div.innerHTML=html;$('chatArea').appendChild(div);$('chatArea').scrollTop=$('chatArea').scrollHeight;
 }
-
-function addTyping() {
-  var div = document.createElement('div'); div.className = 'msg ai'; div.id = 'typing';
-  div.innerHTML = '<div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
-  $('chatArea').appendChild(div); $('chatArea').scrollTop = $('chatArea').scrollHeight;
-}
-function removeTyping() { var el = $('typing'); if (el) el.remove(); }
+function addTyping(){var d=document.createElement('div');d.className='msg ai';d.id='typing';d.innerHTML='<div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';$('chatArea').appendChild(d);$('chatArea').scrollTop=$('chatArea').scrollHeight}
+function rmTyping(){var e=$('typing');if(e)e.remove()}
 
 // ── Query ──
-function handleQuery(query) {
-  if (!query.trim() || isGenerating) return;
-  isGenerating = true; updateStatus();
-  addMessage(query, 'user');
-  $('inputField').value = ''; autoResize();
+function handleQuery(q){
+  if(!q.trim()||isGenerating)return;
+  isGenerating=true;updateStatus();
+  addMsg(q,'user');
+  $('inputField').value='';autoResize();
 
-  var results = bm25.search(query, 5);
-  if (results.length === 0) {
-    addMessage("Couldn't find anything matching that. Try rephrasing or check the manual is imported.", 'ai');
-    isGenerating = false; updateStatus(); return;
-  }
+  var results=bm25.search(q,5);
+  if(!results.length){addMsg("Nothing found. Try different keywords.",'ai');isGenerating=false;updateStatus();return}
 
-  if (mode === 'search' || !engine) {
-    var answer = '';
-    results.forEach(function(r) { answer += '━━ ' + r.source + ' p.' + r.page + ' ━━\n' + r.text.trim() + '\n\n'; });
-    addMessage(answer.trim(), 'ai', results.slice(0, 3));
-    isGenerating = false; updateStatus();
+  if(mode==='search'||!engine){
+    // Search-only: concise, show top 3 with refs
+    var top=results.slice(0,3);
+    var answer='';
+    top.forEach(function(r,i){
+      // Extract most relevant sentence(s)
+      var sentences=r.text.split(/[.!?]+/).filter(function(s){return s.trim().length>20});
+      var qWords=q.toLowerCase().split(/\s+/);
+      var best=sentences.map(function(s){
+        var sc=0;qWords.forEach(function(w){if(s.toLowerCase().indexOf(w)>=0)sc++});return{s:s.trim(),sc:sc};
+      }).sort(function(a,b){return b.sc-a.sc});
+      var excerpt=best.length?best.slice(0,3).map(function(x){return x.s}).join('. ')+'.' : r.text.slice(0,300);
+      answer+='▸ '+excerpt.trim()+'\n  ↳ '+r.ref+' p.'+r.page+'\n\n';
+    });
+    addMsg(answer.trim(),'ai',top);
+    isGenerating=false;updateStatus();
   } else {
     addTyping();
-    var context = results.slice(0,3).map(function(r,i) { return '[Source '+(i+1)+': '+r.source+', Page '+r.page+']\n'+r.text; }).join('\n\n');
-    var prompt = 'You are an expert A321 technical reference assistant for an airline pilot. Answer using ONLY the provided manual excerpts. Be precise with numbers, limitations, and procedures. Cite the source and page. If the excerpts don\'t contain the answer, say so.\n\nMANUAL EXCERPTS:\n' + context + '\n\nQUESTION: ' + query + '\n\nANSWER:';
-    engine.chat.completions.create({ messages: [{ role: 'user', content: prompt }], max_tokens: 800, temperature: 0.1 }).then(function(reply) {
-      removeTyping();
-      addMessage(reply.choices[0].message.content || 'No response.', 'ai', results.slice(0,3));
-      isGenerating = false; updateStatus();
-    }).catch(function(err) {
-      removeTyping();
-      var fb = ''; results.forEach(function(r){fb += r.source+' p.'+r.page+':\n'+r.text.slice(0,300)+'\n\n';});
-      addMessage('Model error. Search results:\n\n' + fb.trim(), 'ai', results.slice(0,3));
-      isGenerating = false; updateStatus();
+    var ctx=results.slice(0,3).map(function(r,i){return'['+r.ref+' p.'+r.page+']\n'+r.text}).join('\n\n');
+    var prompt='You are an A321 technical reference AI. Rules:\n- Answer ONLY from the provided excerpts\n- Be VERY precise and concise — short direct answers, no filler\n- Always end with the reference in format: REF: FCOM-LIM-ENG-OIL p.XX\n- Use exact numbers, values, limitations from the text\n- If not in the excerpts, say "Not found in loaded sections"\n\nEXCERPTS:\n'+ctx+'\n\nQ: '+q+'\n\nA:';
+    engine.chat.completions.create({messages:[{role:'user',content:prompt}],max_tokens:400,temperature:0.05}).then(function(reply){
+      rmTyping();addMsg(reply.choices[0].message.content||'No response.','ai',results.slice(0,3));
+      isGenerating=false;updateStatus();
+    }).catch(function(err){
+      rmTyping();
+      var fb='';results.slice(0,3).forEach(function(r){fb+=r.ref+' p.'+r.page+':\n'+r.text.slice(0,200)+'\n\n'});
+      addMsg('Model error. Results:\n\n'+fb.trim(),'ai',results.slice(0,3));
+      isGenerating=false;updateStatus();
     });
   }
 }
 
-function autoResize() {
-  $('inputField').style.height = 'auto';
-  $('inputField').style.height = Math.min($('inputField').scrollHeight, 120) + 'px';
-}
+function autoResize(){$('inputField').style.height='auto';$('inputField').style.height=Math.min($('inputField').scrollHeight,120)+'px'}
 
 // ── Events ──
-$('inputField').addEventListener('input', function() {
-  autoResize();
-  $('sendBtn').disabled = !$('inputField').value.trim() || !manuals.length || isGenerating;
-});
-$('inputField').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleQuery($('inputField').value); }
-});
-$('sendBtn').addEventListener('click', function() { handleQuery($('inputField').value); });
+$('inputField').addEventListener('input',function(){autoResize();$('sendBtn').disabled=!$('inputField').value.trim()||!manuals.length||isGenerating});
+$('inputField').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleQuery($('inputField').value)}});
+$('sendBtn').onclick=function(){handleQuery($('inputField').value)};
 
-$('btnManuals').onclick = function() { renderManualsList(); $('manualsPanel').classList.add('open'); };
-$('closeManualsPanel').onclick = function() { $('manualsPanel').classList.remove('open'); };
-$('manualsPanel').onclick = function(e) { if (e.target === $('manualsPanel')) $('manualsPanel').classList.remove('open'); };
-$('btnModel').onclick = function() { renderModelList(); $('modelPanel').classList.add('open'); };
-$('closeModelPanel').onclick = function() { $('modelPanel').classList.remove('open'); };
-$('modelPanel').onclick = function(e) { if (e.target === $('modelPanel')) $('modelPanel').classList.remove('open'); };
+// Panels
+$('btnManuals').onclick=function(){renderManuals();$('manualsPanel').classList.add('open')};
+$('closeManualsPanel').onclick=function(){$('manualsPanel').classList.remove('open')};
+$('manualsPanel').onclick=function(e){if(e.target===$('manualsPanel'))$('manualsPanel').classList.remove('open')};
+$('btnModel').onclick=function(){renderModels();$('modelPanel').classList.add('open')};
+$('closeModelPanel').onclick=function(){$('modelPanel').classList.remove('open')};
+$('modelPanel').onclick=function(e){if(e.target===$('modelPanel'))$('modelPanel').classList.remove('open')};
+
+// Type selector
+document.querySelectorAll('.type-btn').forEach(function(btn){
+  btn.onclick=function(){
+    document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('sel')});
+    btn.classList.add('sel');selectedType=btn.dataset.type;updateRefPreview();
+  };
+});
+$('sectionTag').addEventListener('input',updateRefPreview);
 
 // File import
-$('fileDrop').onclick = function() { $('fileInput').click(); };
-$('fileInput').addEventListener('change', function(e) {
-  var files = e.target.files;
-  var processFiles = function(idx) {
-    if (idx >= files.length) { rebuildIndex(); $('fileInput').value = ''; return; }
-    var file = files[idx], fname = file.name, baseName = fname.replace(/\.[^.]+$/, '');
+$('fileDrop').onclick=function(){$('fileInput').click()};
+$('fileInput').addEventListener('change',function(e){
+  var files=e.target.files;
+  var ref=buildRef(selectedType,$('sectionTag').value);
+  var proc=function(idx){
+    if(idx>=files.length){rebuildIndex();$('fileInput').value='';return}
+    var file=files[idx],fname=file.name;
 
-    if (fname.endsWith('.json')) {
-      $('ocrStatus').textContent = 'Importing ' + fname + '...';
-      file.text().then(function(t) {
-        var data = JSON.parse(t);
-        var pages = data.pages || [{ page: 1, text: typeof data === 'string' ? data : JSON.stringify(data) }];
-        return importManual(data.source || baseName, pages, data.total_pages || 1, fname);
-      }).then(function(m) {
-        $('importStatus').innerHTML = '<p style="color:var(--accent)">✅ ' + m.name + ': ' + m.chunkCount + ' chunks</p>';
-        $('ocrStatus').textContent = ''; processFiles(idx + 1);
-      }).catch(function(err) {
-        $('importStatus').innerHTML = '<p style="color:var(--red)">❌ ' + fname + ': ' + err.message + '</p>';
-        processFiles(idx + 1);
+    if(fname.endsWith('.json')){
+      $('ocrStatus').textContent='Importing '+fname+'...';
+      file.text().then(function(t){
+        var data=JSON.parse(t);
+        var pages=data.pages||[{page:1,text:typeof data==='string'?data:JSON.stringify(data)}];
+        return importManual(ref,pages,data.total_pages||1);
+      }).then(function(m){
+        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+': '+m.chunkCount+' chunks</p>';
+        $('ocrStatus').textContent='';proc(idx+1);
+      }).catch(function(err){$('importStatus').innerHTML='<p style="color:var(--red)">❌ '+err.message+'</p>';proc(idx+1)});
+
+    } else if(fname.endsWith('.txt')){
+      file.text().then(function(t){return importManual(ref,[{page:1,text:t}],1)}).then(function(m){
+        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+': '+m.chunkCount+' chunks</p>';proc(idx+1);
       });
 
-    } else if (fname.endsWith('.txt')) {
-      file.text().then(function(t) {
-        return importManual(baseName, [{ page: 1, text: t }], 1, fname);
-      }).then(function(m) {
-        $('importStatus').innerHTML = '<p style="color:var(--accent)">✅ ' + m.name + ': ' + m.chunkCount + ' chunks</p>';
-        processFiles(idx + 1);
+    } else if(fname.endsWith('.pdf')){
+      $('ocrProgress').style.display='block';$('ocrStatus').textContent='Processing '+fname+'...';
+      extractPDF(file,function(cur,tot,msg){
+        $('ocrProgressFill').style.width=Math.round(cur/tot*100)+'%';
+        $('ocrStatus').textContent=fname+': '+msg+' ('+cur+'/'+tot+')';
+      }).then(function(r){return importManual(ref,r.pages,r.total)}).then(function(m){
+        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+': '+m.chunkCount+' chunks</p>';
+        $('ocrProgress').style.display='none';$('ocrStatus').textContent='';proc(idx+1);
+      }).catch(function(err){
+        $('importStatus').innerHTML='<p style="color:var(--red)">❌ '+fname+': '+err.message+'</p>';
+        $('ocrProgress').style.display='none';proc(idx+1);
       });
-
-    } else if (fname.endsWith('.pdf')) {
-      $('ocrProgress').style.display = 'block';
-      $('ocrStatus').textContent = 'Processing ' + fname + '...';
-      extractPDF(file, function(current, total, msg) {
-        var pct = Math.round(current / total * 100);
-        $('ocrProgressFill').style.width = pct + '%';
-        $('ocrStatus').textContent = fname + ': ' + msg + ' (' + current + '/' + total + ')';
-      }).then(function(result) {
-        return importManual(baseName, result.pages, result.totalPages, fname);
-      }).then(function(m) {
-        $('importStatus').innerHTML = '<p style="color:var(--accent)">✅ ' + m.name + ': ' + m.chunkCount + ' chunks</p>';
-        $('ocrProgress').style.display = 'none'; $('ocrStatus').textContent = '';
-        processFiles(idx + 1);
-      }).catch(function(err) {
-        $('importStatus').innerHTML = '<p style="color:var(--red)">❌ ' + fname + ': ' + err.message + '</p>';
-        $('ocrProgress').style.display = 'none'; processFiles(idx + 1);
-      });
-    } else { processFiles(idx + 1); }
+    } else proc(idx+1);
   };
-  processFiles(0);
+  proc(0);
 });
 
 // Paste
-$('pasteImport').onclick = function() {
-  var label = $('pasteLabel').value.trim(), text = $('pasteArea').value.trim();
-  if (!label || !text) return;
-  importManual(label, [{ page: 1, text: text }], 1, label).then(function(m) {
-    $('pasteLabel').value = ''; $('pasteArea').value = '';
-    $('importStatus').innerHTML = '<p style="color:var(--accent)">✅ ' + m.name + ': ' + m.chunkCount + ' chunks</p>';
+$('pasteImport').onclick=function(){
+  var text=$('pasteArea').value.trim();if(!text)return;
+  var ref=buildRef(selectedType,$('sectionTag').value);
+  importManual(ref,[{page:1,text:text}],1).then(function(m){
+    $('pasteArea').value='';
+    $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+': '+m.chunkCount+' chunks</p>';
     rebuildIndex();
   });
 };
 
 // Clear
-$('btnClearAll').onclick = function() {
-  if (!confirm('Delete all imported manuals?')) return;
-  dbClearStore('manuals').then(function() { return dbClearStore('chunks'); }).then(rebuildIndex);
-};
+$('btnClearAll').onclick=function(){if(!confirm('Delete all?'))return;dbClear('manuals').then(function(){return dbClear('chunks')}).then(rebuildIndex)};
 
 // Model
-$('btnLoadModel').onclick = function() {
-  var status = $('modelStatus'), progress = $('modelProgress'), fill = $('modelProgressFill');
-  $('btnLoadModel').disabled = true; progress.style.display = 'block';
-  status.textContent = 'Loading WebLLM...';
-  $('statusDot').className = 'status-dot blue'; $('statusText').textContent = 'Downloading AI model...';
-  import('https://esm.run/@mlc-ai/web-llm').then(function(webllm) {
-    status.textContent = 'Downloading model...';
-    return webllm.CreateMLCEngine(selectedModel, {
-      initProgressCallback: function(info) {
-        var pct = Math.round((info.progress || 0) * 100);
-        fill.style.width = pct + '%';
-        status.textContent = info.text || ('Downloading... ' + pct + '%');
-        $('statusText').textContent = info.text || ('Downloading... ' + pct + '%');
-      }
-    });
-  }).then(function(eng) {
-    engine = eng; mode = 'ai';
-    dbPut('config', { key: 'model', value: selectedModel });
-    dbPut('config', { key: 'mode', value: 'ai' });
-    status.textContent = '✅ Model loaded!'; progress.style.display = 'none';
-    updateStatus(); updateWelcomeSteps();
-    setTimeout(function() { $('modelPanel').classList.remove('open'); }, 800);
-  }).catch(function(err) {
-    status.textContent = '❌ ' + err.message; progress.style.display = 'none';
-    $('btnLoadModel').disabled = false; updateStatus();
+$('btnLoadModel').onclick=function(){
+  $('btnLoadModel').disabled=true;$('modelProgress').style.display='block';
+  $('modelStatus').textContent='Loading...';$('statusDot').className='status-dot blue';
+  import('https://esm.run/@mlc-ai/web-llm').then(function(webllm){
+    return webllm.CreateMLCEngine(selectedModel,{initProgressCallback:function(info){
+      var p=Math.round((info.progress||0)*100);$('modelProgressFill').style.width=p+'%';
+      $('modelStatus').textContent=info.text||('Downloading... '+p+'%');$('statusText').textContent=info.text||'Downloading...';
+    }});
+  }).then(function(eng){
+    engine=eng;mode='ai';dbPut('config',{key:'model',value:selectedModel});dbPut('config',{key:'mode',value:'ai'});
+    $('modelStatus').textContent='✅ Loaded!';$('modelProgress').style.display='none';
+    updateStatus();updateSteps();setTimeout(function(){$('modelPanel').classList.remove('open')},800);
+  }).catch(function(err){
+    $('modelStatus').textContent='❌ '+err.message;$('modelProgress').style.display='none';$('btnLoadModel').disabled=false;updateStatus();
   });
 };
+$('btnSearchOnly').onclick=function(){mode='search';dbPut('config',{key:'mode',value:'search'});updateStatus();updateSteps();$('modelPanel').classList.remove('open')};
 
-$('btnSearchOnly').onclick = function() {
-  mode = 'search'; dbPut('config', { key: 'mode', value: 'search' });
-  updateStatus(); updateWelcomeSteps(); $('modelPanel').classList.remove('open');
-};
-
-// ── Init ──
-rebuildIndex().then(function() {
-  return dbGet('config', 'mode');
-}).then(function(saved) {
-  if (saved) mode = saved.value;
-  updateStatus(); updateWelcomeSteps(); renderModelList();
+// Init
+rebuildIndex().then(function(){return dbGet('config','mode')}).then(function(s){
+  if(s)mode=s.value;updateStatus();updateSteps();renderModels();updateRefPreview();
 });
 
-}); // end window.load
+});
 </script>
 </body>
 </html>
