@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0e14">
+<title>A321 REF</title>
+<style>
+:root {
+  --bg: #0a0e14;
+  --surface: #131820;
+  --surface2: #1a2230;
+  --border: #1e2a3a;
+  --text: #e0e6ed;
+  --muted: #6b7a8d;
+  --accent: #00d4aa;
+  --accent-dim: rgba(0,212,170,0.12);
+  --blue: #3b82f6;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --radius: 8px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  background: var(--bg); color: var(--text);
+  height: 100dvh; overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+.app { display:flex; flex-direction:column; height:100dvh; }
+
+/* Header */
+.header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top));
+  background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink:0;
+}
+.header h1 {
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 17px; font-weight: 700; letter-spacing: 1px; color: var(--accent);
+}
+.header-sub { font-size: 11px; color: var(--muted); font-weight: 400; }
+.header-actions { display:flex; gap:8px; }
+.icon-btn {
+  background: var(--surface2); border:1px solid var(--border);
+  color: var(--muted); border-radius: 8px;
+  width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:16px; transition: all .15s;
+}
+.icon-btn:active { background: var(--border); }
+
+/* Chat */
+.chat-area {
+  flex:1; overflow-y:auto; padding:16px;
+  -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
+}
+.msg { margin-bottom:16px; max-width:92%; animation: fadeIn .2s ease; }
+.msg.user { margin-left:auto; }
+.msg.ai { margin-right:auto; }
+.msg-bubble {
+  padding:12px 14px; border-radius:14px; font-size:15px; line-height:1.55;
+  word-wrap: break-word; white-space: pre-wrap;
+}
+.msg.user .msg-bubble {
+  background: var(--accent); color: #0a0e14; border-bottom-right-radius:4px; font-weight:500;
+}
+.msg.ai .msg-bubble {
+  background: var(--surface2); border:1px solid var(--border); border-bottom-left-radius:4px;
+}
+.msg-source {
+  margin-top:8px; padding:8px 10px; background: var(--surface);
+  border:1px solid var(--border); border-radius:8px;
+  font-family: 'SF Mono', monospace; font-size: 12px; color: var(--muted);
+  cursor:pointer; transition: all .15s;
+}
+.msg-source:active { background: var(--surface2); border-color: var(--accent); }
+.msg-source-label { color: var(--accent); font-weight:600; margin-bottom:4px; }
+.msg-source-text { color: var(--text); opacity: 0.8; line-height:1.4; }
+.source-expand { display:none; margin-top:8px; padding:10px; background:var(--bg); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text); white-space:pre-wrap; max-height:200px; overflow-y:auto; }
+.source-expand.open { display:block; }
+
+/* Input */
+.input-area {
+  padding: 12px 16px; padding-bottom: max(12px, var(--safe-b));
+  background: var(--surface); border-top: 1px solid var(--border); flex-shrink:0;
+}
+.input-row { display:flex; gap:8px; align-items:flex-end; }
+.input-field {
+  flex:1; background: var(--surface2); border:1px solid var(--border);
+  border-radius:20px; padding:10px 16px; color:var(--text);
+  font-size:16px; font-family:inherit; outline:none; resize:none;
+  max-height:120px; line-height:1.4; transition: border-color .15s;
+}
+.input-field:focus { border-color: var(--accent); }
+.input-field::placeholder { color: var(--muted); }
+.send-btn {
+  width:40px; height:40px; border-radius:50%;
+  background: var(--accent); border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition: opacity .15s;
+}
+.send-btn:disabled { opacity: 0.3; }
+.send-btn svg { fill: #0a0e14; }
+
+/* Status */
+.status-bar {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 16px; font-size:12px; color: var(--muted);
+  background: var(--surface); border-top: 1px solid var(--border);
+}
+.status-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.status-dot.green { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.status-dot.amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+.status-dot.red { background: var(--red); }
+.status-dot.blue { background: var(--blue); animation: pulse 1.5s infinite; }
+
+/* Panel */
+.panel-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.6);
+  z-index:100; display:none; animation: fadeIn .15s;
+}
+.panel-overlay.open { display:flex; align-items:flex-end; justify-content:center; }
+.panel {
+  background: var(--surface); border-radius:16px 16px 0 0;
+  width:100%; max-width:500px; max-height:85dvh;
+  padding:20px; padding-bottom: max(20px, var(--safe-b));
+  overflow-y:auto; animation: slideUp .25s ease;
+}
+.panel h2 { font-size:18px; font-weight:700; margin-bottom:16px; color:var(--text); }
+.panel h3 { font-size:14px; font-weight:600; margin:16px 0 8px; color:var(--accent); }
+.panel p { font-size:14px; color:var(--muted); line-height:1.5; margin-bottom:12px; }
+.panel-close { float:right; background:none; border:none; color:var(--muted); font-size:24px; cursor:pointer; padding:0 4px; }
+
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:12px 20px; border-radius:10px; font-size:15px; font-weight:600;
+  border:none; cursor:pointer; width:100%; transition: all .15s; margin-bottom:8px;
+}
+.btn-primary { background: var(--accent); color:#0a0e14; }
+.btn-primary:active { opacity: 0.8; }
+.btn-secondary { background: var(--surface2); color:var(--text); border:1px solid var(--border); }
+.btn-secondary:active { background: var(--border); }
+.btn-danger { background: rgba(239,68,68,0.15); color: var(--red); border:1px solid rgba(239,68,68,0.3); }
+.btn:disabled { opacity:0.4; pointer-events:none; }
+
+.file-drop {
+  border:2px dashed var(--border); border-radius:12px;
+  padding:24px; text-align:center; cursor:pointer;
+  transition: all .15s; margin-bottom:12px;
+}
+.file-drop:active { border-color: var(--accent); background: var(--accent-dim); }
+
+.manual-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px; background:var(--surface2); border-radius:8px;
+  margin-bottom:8px; border:1px solid var(--border);
+}
+.manual-item-info { flex:1; }
+.manual-item-name { font-size:14px; font-weight:600; }
+.manual-item-meta { font-size:12px; color:var(--muted); margin-top:2px; }
+.manual-item-del { background:none; border:none; color:var(--red); font-size:18px; cursor:pointer; padding:4px 8px; }
+
+.progress-bar { height:6px; background:var(--surface2); border-radius:3px; margin:12px 0; overflow:hidden; }
+.progress-fill { height:100%; background:var(--accent); border-radius:3px; transition: width .3s; }
+
+.model-option {
+  padding:12px; background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; margin-bottom:8px; cursor:pointer; transition: all .15s;
+}
+.model-option:active, .model-option.selected { border-color: var(--accent); background: var(--accent-dim); }
+.model-option-name { font-size:14px; font-weight:600; }
+.model-option-desc { font-size:12px; color:var(--muted); margin-top:2px; }
+
+/* Welcome */
+.welcome { padding:32px 16px; text-align:center; }
+.welcome h2 { font-size:22px; font-weight:700; margin:16px 0 8px; }
+.welcome p { font-size:14px; color:var(--muted); line-height:1.5; max-width:320px; margin:0 auto 24px; }
+.welcome-steps { text-align:left; max-width:320px; margin:0 auto; }
+.welcome-step { display:flex; gap:12px; margin-bottom:16px; align-items:flex-start; }
+.welcome-step-num {
+  width:28px; height:28px; border-radius:50%; flex-shrink:0;
+  background: var(--accent-dim); color: var(--accent);
+  font-family: monospace; font-size:14px; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+}
+.welcome-step-num.done { background: var(--accent); color: #0a0e14; }
+.welcome-step-text { font-size:14px; color:var(--text); line-height:1.4; padding-top:3px; }
+.welcome-step-text small { color:var(--muted); display:block; margin-top:2px; }
+
+.typing-dots span {
+  display:inline-block; width:6px; height:6px; border-radius:50%;
+  background: var(--muted); margin:0 2px; animation: bounce .6s infinite alternate;
+}
+.typing-dots span:nth-child(2) { animation-delay: .15s; }
+.typing-dots span:nth-child(3) { animation-delay: .3s; }
+
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+@keyframes bounce { to{transform:translateY(-4px);opacity:0.4} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div><h1>A321 REF <span class="header-sub">FCOM · FCTM · MANOPS</span></h1></div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btnManuals" title="Manuals">📄</button>
+      <button class="icon-btn" id="btnModel" title="AI Model">🤖</button>
+    </div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <div class="welcome" id="welcome">
+      <div style="font-size:48px">✈️</div>
+      <h2>A321 Reference AI</h2>
+      <p>Offline AI for your FCOM, FCTM &amp; MANOPS. Everything stays on your device.</p>
+      <div class="welcome-steps">
+        <div class="welcome-step">
+          <div class="welcome-step-num" id="step1num">1</div>
+          <div class="welcome-step-text">Import your manuals<small>PDF files — OCR runs on-device automatically</small></div>
+        </div>
+        <div class="welcome-step">
+          <div class="welcome-step-num" id="step2num">2</div>
+          <div class="welcome-step-text">Download AI model (optional)<small>~2 GB one-time. Or use search-only mode.</small></div>
+        </div>
+        <div class="welcome-step">
+          <div class="welcome-step-num" id="step3num">3</div>
+          <div class="welcome-step-text">Ask anything about the A321<small>Works offline — airplane mode OK</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusBar">
+    <div class="status-dot red" id="statusDot"></div>
+    <span id="statusText">No manuals loaded</span>
+  </div>
+
+  <div class="input-area">
+    <div class="input-row">
+      <textarea class="input-field" id="inputField" placeholder="Ask about the A321..." rows="1"></textarea>
+      <button class="send-btn" id="sendBtn" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Manuals Panel -->
+<div class="panel-overlay" id="manualsPanel">
+  <div class="panel">
+    <button class="panel-close" id="closeManualsPanel">&times;</button>
+    <h2>📄 Manuals</h2>
+    <div class="file-drop" id="fileDrop">
+      <div style="font-size:32px;margin-bottom:8px">📁</div>
+      <div style="font-size:14px;color:var(--muted)">Tap to import PDFs or text files<br><small>Scanned PDFs are OCR'd automatically on-device</small></div>
+      <input type="file" id="fileInput" accept=".pdf,.json,.txt" multiple style="display:none">
+    </div>
+    <div class="progress-bar" id="ocrProgress" style="display:none"><div class="progress-fill" id="ocrProgressFill" style="width:0%"></div></div>
+    <div id="ocrStatus" style="font-size:13px;color:var(--muted);margin-bottom:12px;"></div>
+    <div id="manualsList"></div>
+    <div id="importStatus"></div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+    <h3>Or paste text directly</h3>
+    <p>Copy text from a manual and paste it here.</p>
+    <input type="text" id="pasteLabel" placeholder="e.g. FCOM Limitations Ch.1" style="width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;margin-bottom:8px;outline:none;">
+    <textarea id="pasteArea" placeholder="Paste manual text here..." style="width:100%;height:100px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;outline:none;resize:vertical;margin-bottom:8px;"></textarea>
+    <button class="btn btn-secondary" id="pasteImport">Import pasted text</button>
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+    <button class="btn btn-danger" id="btnClearAll">Clear all manuals</button>
+  </div>
+</div>
+
+<!-- Model Panel -->
+<div class="panel-overlay" id="modelPanel">
+  <div class="panel">
+    <button class="panel-close" id="closeModelPanel">&times;</button>
+    <h2>🤖 AI Model</h2>
+    <p>Download a model for AI-generated answers. Or use search-only mode — it finds the exact manual text without any model.</p>
+    <div id="modelList"></div>
+    <div class="progress-bar" id="modelProgress" style="display:none"><div class="progress-fill" id="modelProgressFill" style="width:0%"></div></div>
+    <div id="modelStatus" style="font-size:13px;color:var(--muted);margin:8px 0;"></div>
+    <button class="btn btn-primary" id="btnLoadModel">Download &amp; Load Model</button>
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+    <h3>Search-only mode</h3>
+    <p>No download needed. Finds and shows the exact manual text. Faster and always accurate.</p>
+    <button class="btn btn-secondary" id="btnSearchOnly">Use search-only mode</button>
+  </div>
+</div>
+
+<!-- Load PDF.js and Tesseract.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.min.mjs" type="module"></script>
+<script>
+// Globals for libraries loaded below
+window.pdfjsReady = false;
+window.tesseractReady = false;
+</script>
+
+<script type="module">
+// ═══════════════════════════════════════════
+//  A321 REF — Offline AI Reference Tool
+//  PDF OCR (Tesseract.js) + BM25 + WebLLM
+// ═══════════════════════════════════════════
+
+// ── Load PDF.js ──
+let pdfjsLib;
+try {
+  pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.min.mjs');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.worker.min.mjs';
+} catch(e) {
+  console.warn('PDF.js load failed, will retry', e);
+}
+
+// ── IndexedDB ──
+const DB_NAME = 'a321ref';
+const DB_VER = 2;
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('manuals')) db.createObjectStore('manuals', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('chunks')) db.createObjectStore('chunks', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('config')) db.createObjectStore('config', { keyPath: 'key' });
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function dbPut(store, data) {
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).put(data);
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
+  });
+}
+async function dbGetAll(store) {
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+async function dbGet(store, key) {
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).get(key);
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+async function dbDelete(store, key) {
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).delete(key);
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
+  });
+}
+async function dbClearStore(store) {
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).clear();
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
+  });
+}
+
+// ── BM25 Search ──
+class BM25 {
+  constructor(k1 = 1.5, b = 0.75) {
+    this.k1 = k1; this.b = b;
+    this.docs = []; this.avgdl = 0; this.idf = {};
+    this.docFreq = {}; this.docTermFreqs = []; this.docLengths = [];
+  }
+  tokenize(text) {
+    return text.toLowerCase().replace(/[^a-z0-9\s./-]/g, ' ').split(/\s+/).filter(t => t.length > 1);
+  }
+  buildIndex(docs) {
+    this.docs = docs;
+    const N = docs.length;
+    this.docTermFreqs = []; this.docLengths = []; this.docFreq = {};
+    for (const doc of docs) {
+      const tokens = this.tokenize(doc.text);
+      this.docLengths.push(tokens.length);
+      const tf = {}; const seen = new Set();
+      for (const t of tokens) {
+        tf[t] = (tf[t] || 0) + 1;
+        if (!seen.has(t)) { this.docFreq[t] = (this.docFreq[t] || 0) + 1; seen.add(t); }
+      }
+      this.docTermFreqs.push(tf);
+    }
+    this.avgdl = this.docLengths.reduce((a, b) => a + b, 0) / (N || 1);
+    this.idf = {};
+    for (const [term, df] of Object.entries(this.docFreq)) {
+      this.idf[term] = Math.log((N - df + 0.5) / (df + 0.5) + 1);
+    }
+  }
+  search(query, topK = 5) {
+    const qTokens = this.tokenize(query);
+    const scores = [];
+    for (let i = 0; i < this.docs.length; i++) {
+      let score = 0;
+      const dl = this.docLengths[i]; const tf = this.docTermFreqs[i];
+      for (const t of qTokens) {
+        if (!this.idf[t]) continue;
+        const f = tf[t] || 0;
+        score += this.idf[t] * (f * (this.k1 + 1)) / (f + this.k1 * (1 - this.b + this.b * dl / this.avgdl));
+      }
+      if (score > 0) scores.push({ idx: i, score });
+    }
+    scores.sort((a, b) => b.score - a.score);
+    return scores.slice(0, topK).map(s => ({ ...this.docs[s.idx], score: s.score }));
+  }
+}
+
+// ── State ──
+let engine = null;
+let bm25 = new BM25();
+let allChunks = [];
+let manuals = [];
+let mode = 'search';
+let isGenerating = false;
+let selectedModel = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
+let tesseractWorker = null;
+
+const MODELS = [
+  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC', name: 'Llama 3.2 3B', desc: 'Best balance. ~1.8 GB.', recommended: true },
+  { id: 'Qwen2.5-3B-Instruct-q4f16_1-MLC', name: 'Qwen 2.5 3B', desc: 'Strong reasoning. ~1.8 GB.' },
+  { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', name: 'Llama 3.2 1B', desc: 'Fastest, lightest. ~0.7 GB.' },
+  { id: 'Phi-3.5-mini-instruct-q4f16_1-MLC', name: 'Phi 3.5 Mini', desc: 'Strong reasoning. ~2.2 GB.' }
+];
+
+const $ = id => document.getElementById(id);
+
+// ── Chunking ──
+function chunkText(text, source, page, chunkSize = 400) {
+  const words = text.split(/\s+/).filter(w => w.length > 0);
+  const chunks = [];
+  const overlap = 50;
+  for (let i = 0; i < words.length; i += chunkSize - overlap) {
+    const chunk = words.slice(i, i + chunkSize).join(' ');
+    if (chunk.trim().length > 30) {
+      chunks.push({ text: chunk, source, page, id: `${source}_p${page}_c${chunks.length}_${Date.now()}` });
+    }
+  }
+  return chunks;
+}
+
+// ── PDF OCR Pipeline ──
+async function initTesseract() {
+  if (tesseractWorker) return tesseractWorker;
+  const Tess = await import('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.esm.min.js');
+  tesseractWorker = await Tess.createWorker('eng', 1, {
+    workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+    corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core-simd-lstm.wasm.js',
+  });
+  return tesseractWorker;
+}
+
+async function extractPDF(file, onProgress) {
+  if (!pdfjsLib) {
+    pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.min.mjs');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.worker.min.mjs';
+  }
+
+  const arrayBuf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
+  const totalPages = pdf.numPages;
+  const pages = [];
+  let needsOCR = false;
+
+  onProgress(0, totalPages, 'Checking pages...');
+
+  // First pass: try text extraction
+  for (let i = 1; i <= totalPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const text = content.items.map(item => item.str).join(' ').trim();
+    pages.push({ page: i, text, ocr: false });
+    if (text.length < 50) needsOCR = true;
+    onProgress(i, totalPages, 'Extracting text...');
+  }
+
+  // Second pass: OCR pages that had no text
+  if (needsOCR) {
+    onProgress(0, totalPages, 'Starting OCR (this takes a while)...');
+    const worker = await initTesseract();
+
+    for (let i = 0; i < pages.length; i++) {
+      if (pages[i].text.length < 50) {
+        // Render page to canvas
+        const page = await pdf.getPage(i + 1);
+        const scale = 2; // 144 DPI
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        // OCR the rendered image
+        const { data } = await worker.recognize(canvas);
+        pages[i].text = data.text.trim();
+        pages[i].ocr = true;
+      }
+      onProgress(i + 1, totalPages, `OCR page ${i+1}/${totalPages}...`);
+    }
+  }
+
+  return { pages: pages.filter(p => p.text.length > 10), totalPages };
+}
+
+// ── Import ──
+async function importManual(name, pages, totalPages, filename) {
+  const manualId = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
+  const chunks = [];
+  for (const p of pages) {
+    chunks.push(...chunkText(p.text, name, p.page));
+  }
+
+  const manual = {
+    id: manualId, name, filename: filename || name,
+    totalPages, extractedPages: pages.length,
+    chunkCount: chunks.length, importedAt: new Date().toISOString()
+  };
+
+  await dbPut('manuals', manual);
+  for (const chunk of chunks) {
+    chunk.manualId = manualId;
+    await dbPut('chunks', chunk);
+  }
+  return manual;
+}
+
+async function rebuildIndex() {
+  allChunks = await dbGetAll('chunks');
+  manuals = await dbGetAll('manuals');
+  bm25.buildIndex(allChunks);
+  updateStatus(); updateWelcomeSteps(); renderManualsList();
+}
+
+// ── UI ──
+function updateStatus() {
+  const hasDocs = manuals.length > 0;
+  if (!hasDocs) {
+    $('statusDot').className = 'status-dot red';
+    $('statusText').textContent = 'No manuals loaded';
+  } else if (mode === 'search') {
+    $('statusDot').className = 'status-dot green';
+    $('statusText').textContent = `Search mode · ${allChunks.length} chunks · ${manuals.length} manual${manuals.length>1?'s':''}`;
+  } else if (engine) {
+    $('statusDot').className = 'status-dot green';
+    $('statusText').textContent = `AI mode · ${allChunks.length} chunks · Model loaded`;
+  } else {
+    $('statusDot').className = 'status-dot amber';
+    $('statusText').textContent = `${allChunks.length} chunks · No AI model`;
+  }
+  $('sendBtn').disabled = !hasDocs || isGenerating;
+}
+
+function updateWelcomeSteps() {
+  const s1 = $('step1num'), s2 = $('step2num');
+  s1.className = manuals.length > 0 ? 'welcome-step-num done' : 'welcome-step-num';
+  s1.textContent = manuals.length > 0 ? '✓' : '1';
+  s2.className = (engine || mode === 'search') ? 'welcome-step-num done' : 'welcome-step-num';
+  s2.textContent = (engine || mode === 'search') ? '✓' : '2';
+}
+
+function renderManualsList() {
+  const list = $('manualsList'); list.innerHTML = '';
+  for (const m of manuals) {
+    const div = document.createElement('div');
+    div.className = 'manual-item';
+    div.innerHTML = `
+      <div class="manual-item-info">
+        <div class="manual-item-name">${esc(m.name)}</div>
+        <div class="manual-item-meta">${m.chunkCount} chunks · ${m.extractedPages}/${m.totalPages} pages</div>
+      </div>
+      <button class="manual-item-del" data-id="${m.id}">✕</button>`;
+    list.appendChild(div);
+  }
+  list.querySelectorAll('.manual-item-del').forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.dataset.id;
+      await dbDelete('manuals', id);
+      const db = await openDB();
+      const tx = db.transaction('chunks', 'readwrite');
+      const store = tx.objectStore('chunks');
+      const all = await new Promise(r => { const req = store.getAll(); req.onsuccess = () => r(req.result); });
+      for (const c of all) { if (c.manualId === id) store.delete(c.id); }
+      await new Promise(r => { tx.oncomplete = r; });
+      await rebuildIndex();
+    };
+  });
+}
+
+function renderModelList() {
+  const list = $('modelList'); list.innerHTML = '';
+  for (const m of MODELS) {
+    const div = document.createElement('div');
+    div.className = `model-option ${m.id === selectedModel ? 'selected' : ''}`;
+    div.innerHTML = `<div class="model-option-name">${m.name} ${m.recommended?'⭐':''}</div><div class="model-option-desc">${m.desc}</div>`;
+    div.onclick = () => { selectedModel = m.id; renderModelList(); };
+    list.appendChild(div);
+  }
+}
+
+function esc(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+
+function addMessage(text, role, sources = []) {
+  $('welcome').style.display = 'none';
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  let html = `<div class="msg-bubble">${esc(text)}</div>`;
+  for (const s of sources) {
+    const srcId = 'src_' + Math.random().toString(36).slice(2);
+    html += `<div class="msg-source" onclick="document.getElementById('${srcId}').classList.toggle('open')">
+      <div class="msg-source-label">📖 ${esc(s.source)} — p.${s.page}</div>
+      <div class="msg-source-text">${esc(s.text.slice(0, 150))}...</div>
+      <div class="source-expand" id="${srcId}">${esc(s.text)}</div>
+    </div>`;
+  }
+  div.innerHTML = html;
+  $('chatArea').appendChild(div);
+  $('chatArea').scrollTop = $('chatArea').scrollHeight;
+}
+
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg ai'; div.id = 'typing';
+  div.innerHTML = `<div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  $('chatArea').appendChild(div);
+  $('chatArea').scrollTop = $('chatArea').scrollHeight;
+}
+function removeTyping() { const el = $('typing'); if (el) el.remove(); }
+
+// ── Query ──
+async function handleQuery(query) {
+  if (!query.trim() || isGenerating) return;
+  isGenerating = true; updateStatus();
+  addMessage(query, 'user');
+  $('inputField').value = ''; autoResize();
+
+  const results = bm25.search(query, 5);
+
+  if (results.length === 0) {
+    addMessage("Couldn't find anything matching that in the loaded manuals. Try rephrasing or check that the relevant section is imported.", 'ai');
+    isGenerating = false; updateStatus(); return;
+  }
+
+  if (mode === 'search' || !engine) {
+    let answer = '';
+    for (const r of results) {
+      answer += `━━ ${r.source} p.${r.page} ━━\n${r.text.trim()}\n\n`;
+    }
+    addMessage(answer.trim(), 'ai', results.slice(0, 3));
+  } else {
+    addTyping();
+    const context = results.slice(0, 3).map((r, i) =>
+      `[Source ${i+1}: ${r.source}, Page ${r.page}]\n${r.text}`
+    ).join('\n\n');
+
+    const prompt = `You are an expert A321 technical reference assistant for an airline pilot. Answer the question using ONLY the provided manual excerpts. Be precise with numbers, limitations, and procedures. Always cite the source and page. If the excerpts don't contain the answer, say so clearly.
+
+MANUAL EXCERPTS:
+${context}
+
+QUESTION: ${query}
+
+ANSWER:`;
+
+    try {
+      const reply = await engine.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 800, temperature: 0.1
+      });
+      removeTyping();
+      addMessage(reply.choices[0]?.message?.content || 'No response.', 'ai', results.slice(0, 3));
+    } catch (err) {
+      removeTyping();
+      let fallback = '';
+      for (const r of results) fallback += `${r.source} p.${r.page}:\n${r.text.slice(0, 300)}\n\n`;
+      addMessage(`Model error: ${err.message}\n\nShowing search results instead:\n\n${fallback.trim()}`, 'ai', results.slice(0, 3));
+    }
+  }
+  isGenerating = false; updateStatus();
+}
+
+// ── Model Loading ──
+async function loadModel(modelId) {
+  const status = $('modelStatus'), progress = $('modelProgress'), fill = $('modelProgressFill');
+  $('btnLoadModel').disabled = true;
+  progress.style.display = 'block';
+  status.textContent = 'Loading WebLLM...';
+  $('statusDot').className = 'status-dot blue';
+  $('statusText').textContent = 'Downloading AI model...';
+
+  try {
+    const webllm = await import('https://esm.run/@mlc-ai/web-llm');
+    status.textContent = 'Downloading model (first time only)...';
+    engine = await webllm.CreateMLCEngine(modelId, {
+      initProgressCallback: (info) => {
+        const pct = Math.round((info.progress || 0) * 100);
+        fill.style.width = pct + '%';
+        status.textContent = info.text || `Downloading... ${pct}%`;
+        $('statusText').textContent = info.text || `Downloading... ${pct}%`;
+      }
+    });
+    mode = 'ai';
+    await dbPut('config', { key: 'model', value: modelId });
+    await dbPut('config', { key: 'mode', value: 'ai' });
+    status.textContent = '✅ Model loaded! Fully offline now.';
+    progress.style.display = 'none';
+    updateStatus(); updateWelcomeSteps();
+    setTimeout(() => $('modelPanel').classList.remove('open'), 800);
+  } catch (err) {
+    status.textContent = `❌ ${err.message}`;
+    if (err.message && err.message.toLowerCase().includes('webgpu')) {
+      status.textContent = '❌ WebGPU not available. Use search-only mode or update Safari.';
+    }
+    progress.style.display = 'none';
+    $('btnLoadModel').disabled = false;
+    $('statusDot').className = 'status-dot red';
+    updateStatus();
+  }
+}
+
+// ── Input ──
+function autoResize() {
+  $('inputField').style.height = 'auto';
+  $('inputField').style.height = Math.min($('inputField').scrollHeight, 120) + 'px';
+}
+
+$('inputField').addEventListener('input', () => {
+  autoResize();
+  $('sendBtn').disabled = !$('inputField').value.trim() || !manuals.length || isGenerating;
+});
+$('inputField').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleQuery($('inputField').value); }
+});
+$('sendBtn').addEventListener('click', () => handleQuery($('inputField').value));
+
+// ── Panel toggles ──
+$('btnManuals').onclick = () => { renderManualsList(); $('manualsPanel').classList.add('open'); };
+$('closeManualsPanel').onclick = () => $('manualsPanel').classList.remove('open');
+$('manualsPanel').onclick = (e) => { if (e.target === $('manualsPanel')) $('manualsPanel').classList.remove('open'); };
+$('btnModel').onclick = () => { renderModelList(); $('modelPanel').classList.add('open'); };
+$('closeModelPanel').onclick = () => $('modelPanel').classList.remove('open');
+$('modelPanel').onclick = (e) => { if (e.target === $('modelPanel')) $('modelPanel').classList.remove('open'); };
+
+// ── File Import ──
+$('fileDrop').onclick = () => $('fileInput').click();
+$('fileInput').addEventListener('change', async (e) => {
+  const files = e.target.files;
+  const ocrStatus = $('ocrStatus');
+  const ocrProgress = $('ocrProgress');
+  const ocrFill = $('ocrProgressFill');
+  const importStatus = $('importStatus');
+
+  for (const file of files) {
+    const fname = file.name;
+    const baseName = fname.replace(/\.[^.]+$/, '');
+
+    if (fname.endsWith('.json')) {
+      // JSON from OCR script
+      ocrStatus.textContent = `Importing ${fname}...`;
+      try {
+        const data = JSON.parse(await file.text());
+        const manual = await importManual(
+          data.source || baseName,
+          data.pages || [{ page: 1, text: typeof data === 'string' ? data : JSON.stringify(data) }],
+          data.total_pages || 1,
+          fname
+        );
+        importStatus.innerHTML = `<p style="color:var(--accent)">✅ ${manual.name}: ${manual.chunkCount} chunks</p>`;
+      } catch (err) {
+        importStatus.innerHTML = `<p style="color:var(--red)">❌ ${fname}: ${err.message}</p>`;
+      }
+      ocrStatus.textContent = '';
+
+    } else if (fname.endsWith('.txt')) {
+      // Plain text
+      const text = await file.text();
+      const manual = await importManual(baseName, [{ page: 1, text }], 1, fname);
+      importStatus.innerHTML = `<p style="color:var(--accent)">✅ ${manual.name}: ${manual.chunkCount} chunks</p>`;
+
+    } else if (fname.endsWith('.pdf')) {
+      // PDF — extract text or OCR
+      ocrProgress.style.display = 'block';
+      ocrStatus.textContent = `Processing ${fname}...`;
+
+      try {
+        const result = await extractPDF(file, (current, total, msg) => {
+          const pct = Math.round(current / total * 100);
+          ocrFill.style.width = pct + '%';
+          ocrStatus.textContent = `${fname}: ${msg} (${current}/${total})`;
+        });
+
+        const manual = await importManual(baseName, result.pages, result.totalPages, fname);
+        importStatus.innerHTML = `<p style="color:var(--accent)">✅ ${manual.name}: ${manual.chunkCount} chunks from ${result.pages.length} pages</p>`;
+      } catch (err) {
+        importStatus.innerHTML = `<p style="color:var(--red)">❌ ${fname}: ${err.message}</p>`;
+      }
+      ocrProgress.style.display = 'none';
+      ocrStatus.textContent = '';
+    }
+  }
+
+  await rebuildIndex();
+  $('fileInput').value = '';
+});
+
+// Paste import
+$('pasteImport').onclick = async () => {
+  const label = $('pasteLabel').value.trim();
+  const text = $('pasteArea').value.trim();
+  if (!label || !text) return;
+  const manual = await importManual(label, [{ page: 1, text }], 1, label);
+  $('pasteLabel').value = ''; $('pasteArea').value = '';
+  $('importStatus').innerHTML = `<p style="color:var(--accent)">✅ ${manual.name}: ${manual.chunkCount} chunks</p>`;
+  await rebuildIndex();
+};
+
+// Clear all
+$('btnClearAll').onclick = async () => {
+  if (!confirm('Delete all imported manuals?')) return;
+  await dbClearStore('manuals');
+  await dbClearStore('chunks');
+  await rebuildIndex();
+  $('importStatus').innerHTML = `<p style="color:var(--muted)">All manuals cleared.</p>`;
+};
+
+// Model buttons
+$('btnLoadModel').onclick = () => loadModel(selectedModel);
+$('btnSearchOnly').onclick = async () => {
+  mode = 'search';
+  await dbPut('config', { key: 'mode', value: 'search' });
+  updateStatus(); updateWelcomeSteps();
+  $('modelPanel').classList.remove('open');
+};
+
+// ── Init ──
+async function init() {
+  await openDB();
+  await rebuildIndex();
+  const savedMode = await dbGet('config', 'mode');
+  if (savedMode) mode = savedMode.value;
+  if (mode === 'ai') {
+    const savedModel = await dbGet('config', 'model');
+    if (savedModel) {
+      selectedModel = savedModel.value;
+      try {
+        $('statusDot').className = 'status-dot blue';
+        $('statusText').textContent = 'Loading AI model from cache...';
+        const webllm = await import('https://esm.run/@mlc-ai/web-llm');
+        engine = await webllm.CreateMLCEngine(selectedModel, {
+          initProgressCallback: (info) => { $('statusText').textContent = info.text || 'Loading...'; }
+        });
+      } catch { mode = 'search'; }
+    }
+  }
+  updateStatus(); updateWelcomeSteps(); renderModelList();
+}
+
+init();
+</script>
+</body>
+</html>
