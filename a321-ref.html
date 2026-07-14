@@ -25,9 +25,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .msg-bubble{padding:12px 14px;border-radius:14px;font-size:15px;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
 .msg.user .msg-bubble{background:var(--accent);color:#0a0e14;border-bottom-right-radius:4px;font-weight:500}
 .msg.ai .msg-bubble{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg-ref{margin-top:6px;padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'SF Mono',monospace;font-size:12px;color:var(--accent);cursor:pointer;display:inline-block}
+.msg-refs{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.msg-ref{padding:5px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'SF Mono',monospace;font-size:11px;color:var(--accent);cursor:pointer;display:inline-block}
 .msg-ref:active{background:var(--accent-dim)}
-.ref-detail{display:none;margin-top:6px;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:13px;line-height:1.4;color:var(--text);white-space:pre-wrap;max-height:180px;overflow-y:auto;font-family:-apple-system,system-ui,sans-serif}
+.ref-detail{display:none;margin-top:6px;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:12px;line-height:1.4;color:var(--muted);white-space:pre-wrap;max-height:160px;overflow-y:auto;font-family:-apple-system,system-ui,sans-serif}
 .ref-detail.open{display:block}
 .input-area{padding:12px 16px;padding-bottom:max(12px,var(--safe-b));background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
 .input-row{display:flex;gap:8px;align-items:flex-end}
@@ -87,6 +88,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .tag-input::placeholder{color:var(--muted);text-transform:none}
 .ref-preview{font-size:12px;color:var(--muted);margin-bottom:12px;font-family:'SF Mono',monospace}
 .ref-preview span{color:var(--accent)}
+.route-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'SF Mono',monospace;font-size:11px;font-weight:700;margin-bottom:8px}
+.route-fcom{background:rgba(59,130,246,0.15);color:var(--blue)}
+.route-fctm{background:rgba(245,158,11,0.15);color:var(--amber)}
+.route-manops{background:rgba(0,212,170,0.15);color:var(--accent)}
+.route-all{background:rgba(107,122,141,0.15);color:var(--muted)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes bounce{to{transform:translateY(-4px);opacity:0.4}}
@@ -106,11 +112,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
     <div class="welcome" id="welcome">
       <div style="font-size:48px">✈️</div>
       <h2>A321 Reference AI</h2>
-      <p>Offline AI for your FCOM, FCTM &amp; MANOPS. Everything stays on your device.</p>
+      <p>Your offline A321 copilot. Ask anything — limitations, techniques, company ops. Answers come straight from your manuals.</p>
       <div class="welcome-steps">
-        <div class="welcome-step"><div class="welcome-step-num" id="step1num">1</div><div class="welcome-step-text">Import your manuals<small>Tag each section (e.g. FCOM-LIM-ENG-OIL)</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step1num">1</div><div class="welcome-step-text">Import your manuals<small>Tag each section (e.g. FCOM-LIM-ENG)</small></div></div>
         <div class="welcome-step"><div class="welcome-step-num" id="step2num">2</div><div class="welcome-step-text">Download AI model (optional)<small>Or use search-only mode</small></div></div>
-        <div class="welcome-step"><div class="welcome-step-num" id="step3num">3</div><div class="welcome-step-text">Ask anything about the A321<small>Precise answers with exact references</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step3num">3</div><div class="welcome-step-text">Ask anything<small>Smart routing to the right manual</small></div></div>
       </div>
     </div>
   </div>
@@ -137,7 +143,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
   <h3>3. Upload file</h3>
   <div class="file-drop" id="fileDrop">
     <div style="font-size:32px;margin-bottom:8px">📁</div>
-    <div style="font-size:14px;color:var(--muted)">Tap to import PDF, JSON, or text<br><small>Scanned PDFs are OCR'd on-device</small></div>
+    <div style="font-size:14px;color:var(--muted)">Tap to import PDF, JSON, or text</div>
     <input type="file" id="fileInput" accept=".pdf,.json,.txt" multiple style="display:none">
   </div>
   <div class="progress-bar" id="ocrProgress" style="display:none"><div class="progress-fill" id="ocrProgressFill" style="width:0%"></div></div>
@@ -156,14 +162,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 <div class="panel-overlay" id="modelPanel"><div class="panel">
   <button class="panel-close" id="closeModelPanel">&times;</button>
   <h2>🤖 AI Model</h2>
-  <p>Download a model for AI-generated answers, or use search-only mode.</p>
+  <p>Download a model for AI answers, or use search-only mode.</p>
   <div id="modelList"></div>
   <div class="progress-bar" id="modelProgress" style="display:none"><div class="progress-fill" id="modelProgressFill" style="width:0%"></div></div>
   <div id="modelStatus" style="font-size:13px;color:var(--muted);margin:8px 0"></div>
   <button class="btn btn-primary" id="btnLoadModel">Download &amp; Load Model</button>
   <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
-  <h3>Search-only mode</h3>
-  <p>No download. Finds exact manual text. Faster and always accurate.</p>
   <button class="btn btn-secondary" id="btnSearchOnly">Use search-only mode</button>
 </div></div>
 
@@ -175,16 +179,133 @@ window.addEventListener('load', function() {
 
 if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ── DB ──
-var DB='a321ref',DBV=4;
-function openDB(){return new Promise(function(ok,no){var r=indexedDB.open(DB,DBV);r.onupgradeneeded=function(){var d=r.result;if(!d.objectStoreNames.contains('manuals'))d.createObjectStore('manuals',{keyPath:'id'});if(!d.objectStoreNames.contains('chunks'))d.createObjectStore('chunks',{keyPath:'id'});if(!d.objectStoreNames.contains('config'))d.createObjectStore('config',{keyPath:'key'});};r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})}
+// ══════════════════════════════════════
+//  ABBREVIATION DICTIONARY
+// ══════════════════════════════════════
+var ABBR = {
+  'neo':'new engine option','ceo':'current engine option','pw':'pratt whitney','gtf':'geared turbofan',
+  'leap':'leading edge aviation propulsion','egt':'exhaust gas temperature','itt':'interstage turbine temperature',
+  'n1':'fan speed','n2':'core speed','ff':'fuel flow','epr':'engine pressure ratio',
+  'fadec':'full authority digital engine control','toga':'takeoff go around','flex':'flexible takeoff thrust',
+  'mct':'maximum continuous thrust','clb':'climb thrust','crs':'cruise thrust','rev':'reverse thrust',
+  'idle':'idle thrust','appr':'approach','ga':'go around','to':'takeoff','ldg':'landing','thr':'thrust',
+  'vr':'rotation speed','v1':'decision speed','v2':'takeoff safety speed','vref':'reference landing speed',
+  'vapp':'approach speed','vls':'lowest selectable speed','vfe':'max flap extended speed',
+  'vmo':'maximum operating speed','mmo':'maximum mach operating speed','vle':'max landing gear extended speed',
+  'vlo':'max landing gear operating speed','vs':'stall speed','vs1g':'stall speed 1g',
+  'mcdu':'multipurpose control display unit','fcu':'flight control unit','efis':'electronic flight instrument system',
+  'ecam':'electronic centralized aircraft monitor','fma':'flight mode annunciator',
+  'nd':'navigation display','pfd':'primary flight display','sd':'system display',
+  'ewd':'engine warning display','dmc':'display management computer',
+  'fmgc':'flight management guidance computer','fms':'flight management system',
+  'ap':'autopilot','fd':'flight director','athr':'autothrust','a/thr':'autothrust',
+  'ils':'instrument landing system','vor':'vhf omnidirectional range','ndb':'non directional beacon',
+  'rnav':'area navigation','gnss':'global navigation satellite system','gls':'gbas landing system',
+  'gbas':'ground based augmentation system','lnav':'lateral navigation','vnav':'vertical navigation',
+  'loc':'localizer','gs':'glideslope','gp':'glide path','da':'decision altitude','dh':'decision height',
+  'mda':'minimum descent altitude','mdh':'minimum descent height','oca':'obstacle clearance altitude',
+  'rwy':'runway','twy':'taxiway','tora':'takeoff run available','toda':'takeoff distance available',
+  'asda':'accelerate stop distance available','lda':'landing distance available',
+  'oat':'outside air temperature','isa':'international standard atmosphere','qnh':'altimeter setting',
+  'qfe':'field elevation pressure','fl':'flight level','msl':'mean sea level','agl':'above ground level',
+  'mtow':'maximum takeoff weight','mlw':'maximum landing weight','mzfw':'maximum zero fuel weight',
+  'mfw':'maximum fuel weight','ow':'operating weight','oew':'operating empty weight',
+  'dow':'dry operating weight','zfw':'zero fuel weight','tow':'takeoff weight','lw':'landing weight',
+  'cg':'center of gravity','mac':'mean aerodynamic chord',
+  'apu':'auxiliary power unit','adiru':'air data inertial reference unit','iru':'inertial reference unit',
+  'adr':'air data reference','ra':'radio altimeter','tcas':'traffic collision avoidance system',
+  'gpws':'ground proximity warning system','egpws':'enhanced gpws','taws':'terrain awareness warning system',
+  'fwc':'flight warning computer','bscu':'braking steering control unit',
+  'elac':'elevator aileron computer','sec':'spoiler elevator computer','fac':'flight augmentation computer',
+  'bleed':'bleed air','pack':'air conditioning pack','econ':'economy','emer':'emergency',
+  'pf':'pilot flying','pm':'pilot monitoring','pnf':'pilot not flying','cpt':'captain','fo':'first officer',
+  'sop':'standard operating procedure','qrh':'quick reference handbook','mel':'minimum equipment list',
+  'ddg':'dispatch deviation guide','cdl':'configuration deviation list',
+  'oooi':'out off on in','eta':'estimated time of arrival','etd':'estimated time of departure',
+  'ete':'estimated time enroute','utc':'coordinated universal time',
+  'cat':'category','rvsm':'reduced vertical separation minimum','etops':'extended operations',
+  'edto':'extended diversion time operations','pbn':'performance based navigation',
+  'rnp':'required navigation performance','lvp':'low visibility procedures','lvo':'low visibility operations',
+  'hud':'head up display','xwind':'crosswind','hdg':'heading','trk':'track','brg':'bearing',
+  'alt':'altitude','spd':'speed','mach':'mach number','cas':'calibrated airspeed','tas':'true airspeed',
+  'gnd':'ground','gw':'gross weight','conf':'configuration','slat':'slat','flap':'flap',
+  'spd brk':'speed brake','spdbrk':'speed brake','splr':'spoiler',
+  'hyd':'hydraulic','elec':'electrical','pax':'passenger','fwd':'forward','aft':'aft',
+  'lh':'left hand','rh':'right hand','eng':'engine','sys':'system','ckpt':'cockpit',
+  'wxr':'weather radar','wx':'weather','cb':'circuit breaker','qty':'quantity',
+  'psi':'pounds per square inch','lbs':'pounds','kgs':'kilograms','kt':'knots','kts':'knots',
+  'nm':'nautical miles','ft':'feet','fpm':'feet per minute','inhg':'inches mercury',
+  'gpu':'ground power unit','asu':'air starter unit','acft':'aircraft',
+  'lim':'limitations','dsc':'description','pro':'procedure','nor':'normal','abn':'abnormal',
+  'sup':'supplementary','perf':'performance','wt':'weight','bal':'balance',
+  'cab':'cabin','comm':'communication','nav':'navigation','surv':'surveillance',
+  'fx':'effects','chk':'check','rst':'reset','ovrd':'override','disc':'disconnect',
+  'cmd':'command','man':'manual','auto':'automatic','ctl':'control',
+  'gnd splr':'ground spoiler','thr red':'thrust reduction','acc':'acceleration',
+  'eoap':'engine out acceleration point','eosid':'engine out sid',
+  'oil':'oil','fuel':'fuel','ignition':'ignition','start':'start','crank':'crank',
+  'ice':'ice protection','wai':'wing anti ice','nai':'nacelle anti ice','eai':'engine anti ice',
+  'ldg gear':'landing gear','nose':'nose gear','main':'main gear',
+  'fctl':'flight controls','trim':'trim','rud':'rudder','ail':'aileron','elev':'elevator',
+  'pbcs':'performance based communication and surveillance'
+};
+
+// Expand abbreviations in a query
+function expandQuery(q) {
+  var words = q.toLowerCase().split(/\s+/);
+  var expanded = [];
+  for (var i = 0; i < words.length; i++) {
+    var w = words[i].replace(/[^a-z0-9\/]/g, '');
+    expanded.push(w);
+    if (ABBR[w]) {
+      var parts = ABBR[w].split(' ');
+      for (var j = 0; j < parts.length; j++) expanded.push(parts[j]);
+    }
+    // Try two-word combos
+    if (i < words.length - 1) {
+      var combo = w + ' ' + words[i+1].replace(/[^a-z0-9\/]/g, '');
+      if (ABBR[combo]) {
+        var parts2 = ABBR[combo].split(' ');
+        for (var k = 0; k < parts2.length; k++) expanded.push(parts2[k]);
+      }
+    }
+  }
+  return expanded.join(' ');
+}
+
+// ══════════════════════════════════════
+//  SMART ROUTING
+// ══════════════════════════════════════
+var ROUTE_FCOM = ['limitation','limit','max','min','maximum','minimum','speed','weight','altitude','ceiling','vmo','mmo','mtow','mlw','mzfw','vfe','vle','vlo','temperature','egt','oil','fuel capacity','prohibited','restriction','never exceed','tolerance','range','endurance','operating limit','crosswind limit','tailwind','headwind','flap speed','placard','amber','red line','caution','warning','system description','description','dsc','lim'];
+var ROUTE_FCTM = ['technique','how to','handling','approach technique','landing technique','takeoff technique','tips','best practice','recommended','fly','flare','touchdown','de-crab','weather','gusty','turbulence','windshear','rejected','overweight','manual flying','raw data','visual approach','circling','steep approach','short field','contaminated','slippery','wet runway','icing','mountain','fctm','when to','should i'];
+var ROUTE_MANOPS = ['duty','rest','crew','regulation','company','policy','ops','dispatch','mel','ddg','cdl','minimum equipment','fatigue','scheduling','flight time','block time','ops man','manops','comp time','augment','deadhead','reserve','standby','airport brief','minima','company minima','cat ii','cat iii','lvp','rvsm','etops','edto','dangerous goods','security','emergency equipment','cabin','pax','passenger','procedure company','deviation','diversion'];
+
+function detectRoute(query) {
+  var q = query.toLowerCase();
+  var scores = {FCOM: 0, FCTM: 0, MANOPS: 0};
+  ROUTE_FCOM.forEach(function(kw) { if (q.indexOf(kw) >= 0) scores.FCOM += kw.split(' ').length; });
+  ROUTE_FCTM.forEach(function(kw) { if (q.indexOf(kw) >= 0) scores.FCTM += kw.split(' ').length; });
+  ROUTE_MANOPS.forEach(function(kw) { if (q.indexOf(kw) >= 0) scores.MANOPS += kw.split(' ').length; });
+  var best = 'ALL', bestScore = 0;
+  ['FCOM','FCTM','MANOPS'].forEach(function(k) { if (scores[k] > bestScore) { best = k; bestScore = scores[k]; } });
+  if (bestScore === 0) best = 'ALL';
+  return best;
+}
+
+// ══════════════════════════════════════
+//  DB
+// ══════════════════════════════════════
+var DB='a321ref',DBV=5;
+function openDB(){return new Promise(function(ok,no){var r=indexedDB.open(DB,DBV);r.onupgradeneeded=function(){var d=r.result;['manuals','chunks','config'].forEach(function(s){if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:s==='config'?'key':'id'})})};r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})}
 function dbPut(s,d){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readwrite');tx.objectStore(s).put(d);tx.oncomplete=ok;tx.onerror=function(){no(tx.error)}})})}
 function dbGetAll(s){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readonly');var r=tx.objectStore(s).getAll();r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})})}
 function dbGet(s,k){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readonly');var r=tx.objectStore(s).get(k);r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})})}
 function dbDelete(s,k){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readwrite');tx.objectStore(s).delete(k);tx.oncomplete=ok;tx.onerror=function(){no(tx.error)}})})}
 function dbClear(s){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readwrite');tx.objectStore(s).clear();tx.oncomplete=ok;tx.onerror=function(){no(tx.error)}})})}
 
-// ── BM25 ──
+// ══════════════════════════════════════
+//  BM25
+// ══════════════════════════════════════
 function BM25(k1,b){this.k1=k1||1.5;this.b=b||0.75;this.docs=[];this.avgdl=0;this.idf={};this.df={};this.tfs=[];this.dls=[]}
 BM25.prototype.tok=function(t){return t.toLowerCase().replace(/[^a-z0-9\s.\/-]/g,' ').split(/\s+/).filter(function(w){return w.length>1})};
 BM25.prototype.build=function(docs){
@@ -194,16 +315,25 @@ BM25.prototype.build=function(docs){
   this.avgdl=this.dls.reduce(function(a,b){return a+b},0)/(N||1);this.idf={};var self=this;
   Object.keys(this.df).forEach(function(t){self.idf[t]=Math.log((N-self.df[t]+0.5)/(self.df[t]+0.5)+1)})
 };
-BM25.prototype.search=function(q,topK){
+BM25.prototype.search=function(q,topK,filterManual){
   topK=topK||5;var qt=this.tok(q),scores=[],self=this;
-  for(var i=0;i<this.docs.length;i++){var s=0,dl=this.dls[i],tf=this.tfs[i];
+  for(var i=0;i<this.docs.length;i++){
+    // Filter by manual type if routing is active
+    if(filterManual && filterManual!=='ALL'){
+      var docRef=(this.docs[i].ref||'').toUpperCase();
+      if(docRef.indexOf(filterManual)!==0) continue;
+    }
+    var s=0,dl=this.dls[i],tf=this.tfs[i];
     for(var j=0;j<qt.length;j++){var t=qt[j];if(!self.idf[t])continue;var f=tf[t]||0;s+=self.idf[t]*(f*(self.k1+1))/(f+self.k1*(1-self.b+self.b*dl/self.avgdl))}
-    if(s>0)scores.push({i:i,s:s})}
+    if(s>0)scores.push({i:i,s:s});
+  }
   scores.sort(function(a,b){return b.s-a.s});
   return scores.slice(0,topK).map(function(x){var d=self.docs[x.i];return{text:d.text,ref:d.ref,page:d.page,score:x.s}})
 };
 
-// ── State ──
+// ══════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════
 var engine=null,bm25=new BM25(),allChunks=[],manuals=[],mode='search',isGenerating=false;
 var selectedModel='Llama-3.2-3B-Instruct-q4f16_1-MLC',selectedType='FCOM';
 var MODELS=[
@@ -214,30 +344,25 @@ var MODELS=[
 ];
 var $=function(id){return document.getElementById(id)};
 function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function buildRef(type,section){var r=(type||'FCOM').toUpperCase();if(section&&section.trim())r+='-'+section.trim().toUpperCase().replace(/\s+/g,'-');return r}
+function updateRefPreview(){$('refPreview').textContent=buildRef(selectedType,$('sectionTag').value)}
 
-// Build ref string from type + section tag
-function buildRef(type, section) {
-  var r = (type || 'FCOM').toUpperCase();
-  if (section && section.trim()) r += '-' + section.trim().toUpperCase().replace(/\s+/g,'-');
-  return r;
-}
-function updateRefPreview() {
-  var tag = $('sectionTag').value;
-  $('refPreview').textContent = buildRef(selectedType, tag);
-}
-
-// ── Chunk ──
-function chunkText(text, ref, page) {
-  var words = text.split(/\s+/).filter(function(w){return w.length>0});
-  var chunks=[], sz=400, ol=50;
+// ══════════════════════════════════════
+//  CHUNKING
+// ══════════════════════════════════════
+function chunkText(text,ref,page){
+  var words=text.split(/\s+/).filter(function(w){return w.length>0});
+  var chunks=[],sz=400,ol=50;
   for(var i=0;i<words.length;i+=sz-ol){
     var c=words.slice(i,i+sz).join(' ');
-    if(c.trim().length>30) chunks.push({text:c,ref:ref,page:page,id:ref+'_p'+page+'_'+i+'_'+Date.now()+Math.random()});
+    if(c.trim().length>30)chunks.push({text:c,ref:ref,page:page,id:ref+'_p'+page+'_'+i+'_'+Date.now()+Math.random()});
   }
   return chunks;
 }
 
-// ── PDF ──
+// ══════════════════════════════════════
+//  PDF EXTRACT
+// ══════════════════════════════════════
 function extractPDF(file,onProg){
   return new Promise(function(ok,no){
     var reader=new FileReader();
@@ -281,9 +406,11 @@ function extractPDF(file,onProg){
   });
 }
 
-// ── Import ──
-function importManual(ref, pages, totalPages) {
-  var manualId = ref.toLowerCase().replace(/[^a-z0-9]/g,'_')+'_'+Date.now();
+// ══════════════════════════════════════
+//  IMPORT
+// ══════════════════════════════════════
+function importManual(ref,pages,totalPages){
+  var manualId=ref.toLowerCase().replace(/[^a-z0-9]/g,'_')+'_'+Date.now();
   var chunks=[];
   for(var i=0;i<pages.length;i++){var c=chunkText(pages[i].text,ref,pages[i].page);for(var j=0;j<c.length;j++)chunks.push(c[j])}
   var manual={id:manualId,ref:ref,totalPages:totalPages,extractedPages:pages.length,chunkCount:chunks.length,importedAt:new Date().toISOString()};
@@ -293,19 +420,20 @@ function importManual(ref, pages, totalPages) {
     return p.then(function(){return manual});
   });
 }
-
 function rebuildIndex(){
   return dbGetAll('chunks').then(function(c){allChunks=c;return dbGetAll('manuals')}).then(function(m){
     manuals=m;bm25.build(allChunks);updateStatus();updateSteps();renderManuals();
   });
 }
 
-// ── UI ──
+// ══════════════════════════════════════
+//  UI UPDATES
+// ══════════════════════════════════════
 function updateStatus(){
   var has=manuals.length>0;
   if(!has){$('statusDot').className='status-dot red';$('statusText').textContent='No manuals loaded'}
-  else if(mode==='search'){$('statusDot').className='status-dot green';$('statusText').textContent='Search · '+allChunks.length+' chunks · '+manuals.length+' section'+(manuals.length>1?'s':'')}
-  else if(engine){$('statusDot').className='status-dot green';$('statusText').textContent='AI · '+allChunks.length+' chunks'}
+  else if(mode==='search'){$('statusDot').className='status-dot green';$('statusText').textContent='Ready · '+allChunks.length+' chunks · '+manuals.length+' section'+(manuals.length>1?'s':'')}
+  else if(engine){$('statusDot').className='status-dot green';$('statusText').textContent='AI Ready · '+allChunks.length+' chunks'}
   else{$('statusDot').className='status-dot amber';$('statusText').textContent=allChunks.length+' chunks · No model'}
   $('sendBtn').disabled=!has||isGenerating;
 }
@@ -319,7 +447,7 @@ function renderManuals(){
   var list=$('manualsList');list.innerHTML='';
   manuals.forEach(function(m){
     var div=document.createElement('div');div.className='manual-item';
-    div.innerHTML='<div class="manual-item-info"><div class="manual-item-name">'+esc(m.ref)+'</div><div class="manual-item-meta">'+m.chunkCount+' chunks · '+m.extractedPages+'/'+m.totalPages+' pages</div></div><button class="manual-item-del" data-id="'+m.id+'">✕</button>';
+    div.innerHTML='<div class="manual-item-info"><div class="manual-item-name">'+esc(m.ref)+'</div><div class="manual-item-meta">'+m.chunkCount+' chunks · '+m.extractedPages+'/'+m.totalPages+' pg</div></div><button class="manual-item-del" data-id="'+m.id+'">✕</button>';
     list.appendChild(div);
   });
   list.querySelectorAll('.manual-item-del').forEach(function(btn){
@@ -341,62 +469,134 @@ function renderModels(){
   });
 }
 
-// ── Messages ──
-function addMsg(text, role, refs) {
+// ══════════════════════════════════════
+//  MESSAGES
+// ══════════════════════════════════════
+function addMsg(html,role,refs){
   refs=refs||[];
   $('welcome').style.display='none';
   var div=document.createElement('div');div.className='msg '+role;
-  var html='<div class="msg-bubble">'+esc(text)+'</div>';
+  var h='<div class="msg-bubble">'+html+'</div>';
   if(refs.length){
-    html+='<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">';
+    h+='<div class="msg-refs">';
     refs.forEach(function(r){
       var rid='r_'+Math.random().toString(36).slice(2);
-      html+='<div style="display:inline-block"><div class="msg-ref" onclick="document.getElementById(\''+rid+'\').classList.toggle(\'open\')">📖 '+esc(r.ref)+' p.'+r.page+'</div><div class="ref-detail" id="'+rid+'">'+esc(r.text)+'</div></div>';
+      h+='<div><div class="msg-ref" onclick="document.getElementById(\''+rid+'\').classList.toggle(\'open\')">'+esc(r.ref)+' p.'+r.page+'</div><div class="ref-detail" id="'+rid+'">'+esc(r.text)+'</div></div>';
     });
-    html+='</div>';
+    h+='</div>';
   }
-  div.innerHTML=html;$('chatArea').appendChild(div);$('chatArea').scrollTop=$('chatArea').scrollHeight;
+  div.innerHTML=h;$('chatArea').appendChild(div);$('chatArea').scrollTop=$('chatArea').scrollHeight;
 }
 function addTyping(){var d=document.createElement('div');d.className='msg ai';d.id='typing';d.innerHTML='<div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';$('chatArea').appendChild(d);$('chatArea').scrollTop=$('chatArea').scrollHeight}
 function rmTyping(){var e=$('typing');if(e)e.remove()}
 
-// ── Query ──
+// ══════════════════════════════════════
+//  NATURAL ANSWER BUILDER (search mode)
+// ══════════════════════════════════════
+function buildNaturalAnswer(query, results, route) {
+  // Extract the best matching sentences
+  var qWords = expandQuery(query).toLowerCase().split(/\s+/);
+  var allSentences = [];
+
+  results.forEach(function(r) {
+    var sents = r.text.split(/(?<=[.!?])\s+/).filter(function(s) { return s.trim().length > 15; });
+    sents.forEach(function(s) {
+      var score = 0;
+      var sl = s.toLowerCase();
+      qWords.forEach(function(w) { if (w.length > 2 && sl.indexOf(w) >= 0) score++; });
+      allSentences.push({ text: s.trim(), score: score, ref: r.ref, page: r.page });
+    });
+  });
+
+  allSentences.sort(function(a, b) { return b.score - a.score; });
+
+  // Build a natural response
+  var topSents = allSentences.slice(0, 5).filter(function(s) { return s.score > 0; });
+
+  if (topSents.length === 0) {
+    return "I found some related content but couldn't pinpoint an exact answer. Here's the closest match from " + results[0].ref + ":\n\n" + results[0].text.slice(0, 300);
+  }
+
+  // Group by reference
+  var byRef = {};
+  topSents.forEach(function(s) {
+    var key = s.ref + ' p.' + s.page;
+    if (!byRef[key]) byRef[key] = [];
+    byRef[key].push(s.text);
+  });
+
+  var answer = "";
+  var refKeys = Object.keys(byRef);
+
+  if (refKeys.length === 1) {
+    answer = "Per " + refKeys[0] + ":\n\n" + byRef[refKeys[0]].join(' ');
+  } else {
+    refKeys.forEach(function(key) {
+      answer += "From " + key + ":\n" + byRef[key].join(' ') + "\n\n";
+    });
+  }
+
+  return answer.trim();
+}
+
+// ══════════════════════════════════════
+//  QUERY HANDLER
+// ══════════════════════════════════════
 function handleQuery(q){
   if(!q.trim()||isGenerating)return;
   isGenerating=true;updateStatus();
-  addMsg(q,'user');
+  addMsg(esc(q),'user');
   $('inputField').value='';autoResize();
 
-  var results=bm25.search(q,5);
-  if(!results.length){addMsg("Nothing found. Try different keywords.",'ai');isGenerating=false;updateStatus();return}
+  // Smart routing
+  var route = detectRoute(q);
+  var routeLabel = route === 'ALL' ? 'Searching all manuals' : 'Routed to ' + route;
+  var routeClass = route === 'FCOM' ? 'route-fcom' : route === 'FCTM' ? 'route-fctm' : route === 'MANOPS' ? 'route-manops' : 'route-all';
 
-  if(mode==='search'||!engine){
-    // Search-only: concise, show top 3 with refs
-    var top=results.slice(0,3);
-    var answer='';
-    top.forEach(function(r,i){
-      // Extract most relevant sentence(s)
-      var sentences=r.text.split(/[.!?]+/).filter(function(s){return s.trim().length>20});
-      var qWords=q.toLowerCase().split(/\s+/);
-      var best=sentences.map(function(s){
-        var sc=0;qWords.forEach(function(w){if(s.toLowerCase().indexOf(w)>=0)sc++});return{s:s.trim(),sc:sc};
-      }).sort(function(a,b){return b.sc-a.sc});
-      var excerpt=best.length?best.slice(0,3).map(function(x){return x.s}).join('. ')+'.' : r.text.slice(0,300);
-      answer+='▸ '+excerpt.trim()+'\n  ↳ '+r.ref+' p.'+r.page+'\n\n';
-    });
-    addMsg(answer.trim(),'ai',top);
-    isGenerating=false;updateStatus();
+  // Expand abbreviations in query
+  var expandedQ = expandQuery(q);
+
+  // Search with routing filter
+  var results = bm25.search(expandedQ, 8, route);
+
+  // If routed search found nothing, fall back to all
+  if (results.length === 0 && route !== 'ALL') {
+    results = bm25.search(expandedQ, 8, 'ALL');
+    route = 'ALL';
+    routeLabel = 'Searching all manuals';
+    routeClass = 'route-all';
+  }
+
+  if (!results.length) {
+    addMsg("I couldn't find anything matching that in the loaded sections. Try different wording or check that the relevant manual section is imported.", 'ai');
+    isGenerating = false; updateStatus(); return;
+  }
+
+  var routeBadge = '<span class="route-badge ' + routeClass + '">' + routeLabel + '</span>\n\n';
+
+  if (mode === 'search' || !engine) {
+    var answer = buildNaturalAnswer(q, results.slice(0, 3), route);
+    addMsg(routeBadge + esc(answer), 'ai', results.slice(0, 3));
+    isGenerating = false; updateStatus();
   } else {
     addTyping();
-    var ctx=results.slice(0,3).map(function(r,i){return'['+r.ref+' p.'+r.page+']\n'+r.text}).join('\n\n');
-    var prompt='You are an A321 technical reference AI. Rules:\n- Answer ONLY from the provided excerpts\n- Be VERY precise and concise — short direct answers, no filler\n- Always end with the reference in format: REF: FCOM-LIM-ENG-OIL p.XX\n- Use exact numbers, values, limitations from the text\n- If not in the excerpts, say "Not found in loaded sections"\n\nEXCERPTS:\n'+ctx+'\n\nQ: '+q+'\n\nA:';
-    engine.chat.completions.create({messages:[{role:'user',content:prompt}],max_tokens:400,temperature:0.05}).then(function(reply){
-      rmTyping();addMsg(reply.choices[0].message.content||'No response.','ai',results.slice(0,3));
+    var ctx = results.slice(0, 4).map(function(r) { return '[' + r.ref + ' p.' + r.page + ']\n' + r.text; }).join('\n\n');
+    var prompt = 'You are an A321 pilot reference AI built from official manuals. Answer like a knowledgeable colleague — natural, concise, and precise. Rules:\n'
+      + '- Use ONLY the provided excerpts as your source\n'
+      + '- Give a direct, natural answer — like a captain briefing an FO\n'
+      + '- Include exact numbers/values when available\n'
+      + '- End with the reference tag and page, e.g. (FCOM-LIM-ENG p.42)\n'
+      + '- If the answer is not in the excerpts, say "I don\'t have that section loaded — try importing it"\n'
+      + '- Keep it short. No filler.\n\n'
+      + 'EXCERPTS:\n' + ctx + '\n\nQ: ' + q + '\n\nA:';
+    engine.chat.completions.create({messages:[{role:'user',content:prompt}],max_tokens:400,temperature:0.1}).then(function(reply){
+      rmTyping();
+      addMsg(routeBadge + esc(reply.choices[0].message.content || 'No response.'), 'ai', results.slice(0, 3));
       isGenerating=false;updateStatus();
     }).catch(function(err){
       rmTyping();
-      var fb='';results.slice(0,3).forEach(function(r){fb+=r.ref+' p.'+r.page+':\n'+r.text.slice(0,200)+'\n\n'});
-      addMsg('Model error. Results:\n\n'+fb.trim(),'ai',results.slice(0,3));
+      var fb = buildNaturalAnswer(q, results.slice(0, 3), route);
+      addMsg(routeBadge + esc('Model error — here\'s what I found:\n\n' + fb), 'ai', results.slice(0, 3));
       isGenerating=false;updateStatus();
     });
   }
@@ -404,12 +604,13 @@ function handleQuery(q){
 
 function autoResize(){$('inputField').style.height='auto';$('inputField').style.height=Math.min($('inputField').scrollHeight,120)+'px'}
 
-// ── Events ──
+// ══════════════════════════════════════
+//  EVENTS
+// ══════════════════════════════════════
 $('inputField').addEventListener('input',function(){autoResize();$('sendBtn').disabled=!$('inputField').value.trim()||!manuals.length||isGenerating});
 $('inputField').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleQuery($('inputField').value)}});
 $('sendBtn').onclick=function(){handleQuery($('inputField').value)};
 
-// Panels
 $('btnManuals').onclick=function(){renderManuals();$('manualsPanel').classList.add('open')};
 $('closeManualsPanel').onclick=function(){$('manualsPanel').classList.remove('open')};
 $('manualsPanel').onclick=function(e){if(e.target===$('manualsPanel'))$('manualsPanel').classList.remove('open')};
@@ -417,7 +618,6 @@ $('btnModel').onclick=function(){renderModels();$('modelPanel').classList.add('o
 $('closeModelPanel').onclick=function(){$('modelPanel').classList.remove('open')};
 $('modelPanel').onclick=function(e){if(e.target===$('modelPanel'))$('modelPanel').classList.remove('open')};
 
-// Type selector
 document.querySelectorAll('.type-btn').forEach(function(btn){
   btn.onclick=function(){
     document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('sel')});
@@ -426,7 +626,6 @@ document.querySelectorAll('.type-btn').forEach(function(btn){
 });
 $('sectionTag').addEventListener('input',updateRefPreview);
 
-// File import
 $('fileDrop').onclick=function(){$('fileInput').click()};
 $('fileInput').addEventListener('change',function(e){
   var files=e.target.files;
@@ -434,7 +633,6 @@ $('fileInput').addEventListener('change',function(e){
   var proc=function(idx){
     if(idx>=files.length){rebuildIndex();$('fileInput').value='';return}
     var file=files[idx],fname=file.name;
-
     if(fname.endsWith('.json')){
       $('ocrStatus').textContent='Importing '+fname+'...';
       file.text().then(function(t){
@@ -445,12 +643,10 @@ $('fileInput').addEventListener('change',function(e){
         $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+': '+m.chunkCount+' chunks</p>';
         $('ocrStatus').textContent='';proc(idx+1);
       }).catch(function(err){$('importStatus').innerHTML='<p style="color:var(--red)">❌ '+err.message+'</p>';proc(idx+1)});
-
     } else if(fname.endsWith('.txt')){
       file.text().then(function(t){return importManual(ref,[{page:1,text:t}],1)}).then(function(m){
         $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+': '+m.chunkCount+' chunks</p>';proc(idx+1);
       });
-
     } else if(fname.endsWith('.pdf')){
       $('ocrProgress').style.display='block';$('ocrStatus').textContent='Processing '+fname+'...';
       extractPDF(file,function(cur,tot,msg){
@@ -468,7 +664,6 @@ $('fileInput').addEventListener('change',function(e){
   proc(0);
 });
 
-// Paste
 $('pasteImport').onclick=function(){
   var text=$('pasteArea').value.trim();if(!text)return;
   var ref=buildRef(selectedType,$('sectionTag').value);
@@ -479,10 +674,8 @@ $('pasteImport').onclick=function(){
   });
 };
 
-// Clear
 $('btnClearAll').onclick=function(){if(!confirm('Delete all?'))return;dbClear('manuals').then(function(){return dbClear('chunks')}).then(rebuildIndex)};
 
-// Model
 $('btnLoadModel').onclick=function(){
   $('btnLoadModel').disabled=true;$('modelProgress').style.display='block';
   $('modelStatus').textContent='Loading...';$('statusDot').className='status-dot blue';
