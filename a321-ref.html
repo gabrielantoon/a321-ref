@@ -273,24 +273,19 @@ function detectSection(text, manualType) {
     var p = SECTION_PATTERNS[i];
     var matches = tl.match(new RegExp(p.rx.source, 'gi'));
     if (matches) {
-      scores[p.tag] = (scores[p.tag] || 0) + matches.length;
+      // More specific tags (longer) get a bonus to beat generic ones
+      var specificity = p.tag.split('-').length;
+      scores[p.tag] = (scores[p.tag] || 0) + matches.length * specificity;
     }
   }
 
-  // Find best match
   var best = null, bestScore = 0;
   Object.keys(scores).forEach(function(tag) {
     if (scores[tag] > bestScore) { best = tag; bestScore = scores[tag]; }
   });
 
   var prefix = (manualType || 'FCOM').toUpperCase();
-
-  if (best) {
-    // If the detected tag already starts with a category that matches the manual type context, use it
-    return prefix + '-' + best;
-  }
-
-  return prefix;
+  return best ? prefix + '-' + best : prefix;
 }
 
 // ══════════════════════════════════════
@@ -372,13 +367,35 @@ BM25.prototype.build=function(docs){
 };
 BM25.prototype.search=function(q,topK,filterManual,filterVariant){
   topK=topK||5;var qt=this.tok(q),scores=[],self=this;
+  // Build phrase pairs for proximity matching
+  var origQ=q.toLowerCase().trim();
+  var origWords=origQ.split(/\s+/).filter(function(w){return w.length>1});
+
   for(var i=0;i<this.docs.length;i++){
     var d=this.docs[i];
     if(filterManual&&filterManual!=='ALL'){if((d.ref||'').toUpperCase().indexOf(filterManual)!==0)continue}
     if(filterVariant){var dv=(d.variant||'COMMON').toUpperCase();if(dv!=='COMMON'&&dv!==filterVariant)continue}
     var s=0,dl=this.dls[i],tf=this.tfs[i];
     for(var j=0;j<qt.length;j++){var t=qt[j];if(!self.idf[t])continue;var f=tf[t]||0;s+=self.idf[t]*(f*(self.k1+1))/(f+self.k1*(1-self.b+self.b*dl/self.avgdl))}
-    if(s>0)scores.push({i:i,s:s});
+
+    if(s>0){
+      var dtl=d.text.toLowerCase();
+      // Exact phrase boost: if the full query appears as-is
+      if(origWords.length>1&&dtl.indexOf(origQ)>=0) s*=3;
+      // Word pair proximity: boost if consecutive query words appear near each other
+      for(var p=0;p<origWords.length-1;p++){
+        var w1=origWords[p],w2=origWords[p+1];
+        // Check if both words within 5 words of each other
+        var rx=new RegExp(w1+'\\W+(?:\\w+\\W+){0,4}'+w2,'i');
+        if(rx.test(dtl)) s*=1.5;
+      }
+      // Exact word match boost (not just stemmed)
+      origWords.forEach(function(w){
+        var wxr=new RegExp('\\b'+w+'\\b','i');
+        if(wxr.test(dtl)) s*=1.1;
+      });
+      scores.push({i:i,s:s});
+    }
   }
   scores.sort(function(a,b){return b.s-a.s});
   return scores.slice(0,topK).map(function(x){var dd=self.docs[x.i];return{text:dd.text,ref:dd.ref,variant:dd.variant,score:x.s}})
@@ -403,7 +420,7 @@ function esc(t){var d=document.createElement('div');d.textContent=t;return d.inn
 // ══════════════════════════════════════
 function chunkText(text,manualType,variant){
   var words=text.split(/\s+/).filter(function(w){return w.length>0});
-  var chunks=[],sz=400,ol=50;
+  var chunks=[],sz=200,ol=30;
   for(var i=0;i<words.length;i+=sz-ol){
     var c=words.slice(i,i+sz).join(' ');
     if(c.trim().length>30){
