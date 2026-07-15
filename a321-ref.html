@@ -20,8 +20,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .icon-btn:active{background:var(--border)}
 .chat-area{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
 .msg{margin-bottom:16px;max-width:92%;animation:fadeIn .2s ease}
-.msg.user{margin-left:auto}
-.msg.ai{margin-right:auto}
+.msg.user{margin-left:auto}.msg.ai{margin-right:auto}
 .msg-bubble{padding:12px 14px;border-radius:14px;font-size:15px;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
 .msg.user .msg-bubble{background:var(--accent);color:#0a0e14;border-bottom-right-radius:4px;font-weight:500}
 .msg.ai .msg-bubble{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px}
@@ -41,8 +40,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .status-bar{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12px;color:var(--muted);background:var(--surface);border-top:1px solid var(--border)}
 .status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .status-dot.green{background:var(--accent);box-shadow:0 0 6px var(--accent)}
-.status-dot.amber{background:var(--amber)}
-.status-dot.red{background:var(--red)}
+.status-dot.amber{background:var(--amber)}.status-dot.red{background:var(--red)}
 .status-dot.blue{background:var(--blue);animation:pulse 1.5s infinite}
 .panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:none;animation:fadeIn .15s}
 .panel-overlay.open{display:flex;align-items:flex-end;justify-content:center}
@@ -64,11 +62,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .var-btn.sel{border-color:var(--amber);background:rgba(245,158,11,0.12);color:var(--amber)}
 .file-drop{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;margin-bottom:12px}
 .file-drop:active{border-color:var(--accent);background:var(--accent-dim)}
-.manual-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px;border:1px solid var(--border)}
+.manual-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surface2);border-radius:8px;margin-bottom:6px;border:1px solid var(--border)}
 .manual-item-info{flex:1}
-.manual-item-name{font-size:13px;font-weight:600;font-family:'SF Mono',monospace;color:var(--accent)}
-.manual-item-meta{font-size:12px;color:var(--muted);margin-top:2px}
-.manual-item-var{font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;margin-left:8px}
+.manual-item-name{font-size:12px;font-weight:600;font-family:'SF Mono',monospace;color:var(--accent)}
+.manual-item-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.manual-item-var{font-size:10px;font-weight:700;padding:2px 5px;border-radius:3px;margin-left:6px}
 .manual-item-var.neo{background:rgba(59,130,246,0.15);color:var(--blue)}
 .manual-item-var.ceo{background:rgba(245,158,11,0.15);color:var(--amber)}
 .manual-item-var.common{background:rgba(107,122,141,0.15);color:var(--muted)}
@@ -91,10 +89,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .typing-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);margin:0 2px;animation:bounce .6s infinite alternate}
 .typing-dots span:nth-child(2){animation-delay:.15s}
 .typing-dots span:nth-child(3){animation-delay:.3s}
-.tag-input{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--accent);font-size:14px;outline:none;font-family:'SF Mono',monospace;margin-bottom:8px;text-transform:uppercase}
-.tag-input::placeholder{color:var(--muted);text-transform:none}
-.ref-preview{font-size:12px;color:var(--muted);margin-bottom:12px;font-family:'SF Mono',monospace}
-.ref-preview span{color:var(--accent)}
 .route-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'SF Mono',monospace;font-size:11px;font-weight:700;margin-right:6px}
 .route-fcom{background:rgba(59,130,246,0.15);color:var(--blue)}
 .route-fctm{background:rgba(245,158,11,0.15);color:var(--amber)}
@@ -121,11 +115,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
     <div class="welcome" id="welcome">
       <div style="font-size:48px">✈️</div>
       <h2>A321 Reference AI</h2>
-      <p>Your offline A321 copilot. Mention a registration and it auto-detects CEO vs NEO. Answers come straight from your manuals.</p>
+      <p>Your offline A321 copilot. Import your manuals — sections are auto-detected. Mention a registration to filter CEO/NEO.</p>
       <div class="welcome-steps">
-        <div class="welcome-step"><div class="welcome-step-num" id="step1num">1</div><div class="welcome-step-text">Import your manuals<small>Tag each section + CEO/NEO/Common</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step1num">1</div><div class="welcome-step-text">Import manuals<small>Drop the whole PDF — sections auto-detected</small></div></div>
         <div class="welcome-step"><div class="welcome-step-num" id="step2num">2</div><div class="welcome-step-text">Download AI model<small>~2 GB one-time, then offline forever</small></div></div>
-        <div class="welcome-step"><div class="welcome-step-num" id="step3num">3</div><div class="welcome-step-text">Ask anything<small>"C-GOIE min oil qty" → routes to NEO FCOM</small></div></div>
+        <div class="welcome-step"><div class="welcome-step-num" id="step3num">3</div><div class="welcome-step-text">Ask anything<small>"GOIE min oil qty" → NEO + FCOM-LIM-ENG-OIL</small></div></div>
       </div>
     </div>
   </div>
@@ -140,7 +134,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 <div class="panel-overlay" id="manualsPanel"><div class="panel">
   <button class="panel-close" id="closeManualsPanel">&times;</button>
   <h2>📄 Import Manuals</h2>
-  <h3>1. Manual</h3>
+  <h3>1. Manual type</h3>
   <div class="type-btns">
     <div class="type-btn sel" data-type="FCOM">FCOM</div>
     <div class="type-btn" data-type="FCTM">FCTM</div>
@@ -152,10 +146,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
     <div class="var-btn" data-var="NEO">NEO</div>
     <div class="var-btn" data-var="CEO">CEO</div>
   </div>
-  <h3>3. Section tag</h3>
-  <input type="text" class="tag-input" id="sectionTag" placeholder="e.g. LIM-ENG-OIL or DSC-21">
-  <div class="ref-preview">Ref: <span id="refPreview">FCOM-LIM-ENG-OIL</span></div>
-  <h3>4. Upload</h3>
+  <h3>3. Upload</h3>
+  <p>Drop the whole PDF — sections like LIM-ENG-OIL, DSC-FUEL, LIM-LDG-GEAR are auto-detected from the text.</p>
   <div class="file-drop" id="fileDrop">
     <div style="font-size:32px;margin-bottom:8px">📁</div>
     <div style="font-size:14px;color:var(--muted)">Tap to import PDF, JSON, or text</div>
@@ -190,136 +182,175 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 <script>
 window.addEventListener('load', function() {
 
-if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 // ══════════════════════════════════════
 //  FLEET REGISTRY
 // ══════════════════════════════════════
-var FLEET = {
-  // NEO — PW1100G
+var FLEET={
   'C-GOIE':'NEO','C-GOIF':'NEO','C-GOIH':'NEO','C-GOIJ':'NEO','C-GOIK':'NEO',
   'C-GOIM':'NEO','C-GOIO':'NEO','C-GOIP':'NEO','C-GOIR':'NEO','C-GOIS':'NEO',
   'C-GOIW':'NEO','C-GOIX':'NEO','C-GOJC':'NEO','C-GOJQ':'NEO','C-GOKC':'NEO',
   'C-GOKE':'NEO','C-GOKF':'NEO','C-GOKG':'NEO','C-GOKH':'NEO',
-  // CEO — CFM56 / V2500
   'C-FTXQ':'CEO','C-GEXB':'CEO','C-GEZD':'CEO','C-GEZJ':'CEO','C-GEZN':'CEO',
   'C-GEZO':'CEO','C-GEZX':'CEO','C-GTCY':'CEO'
 };
+function detectVariant(q){
+  var qu=q.toUpperCase().replace(/[^A-Z0-9\-]/g,' ');
+  var regs=Object.keys(FLEET);
+  for(var i=0;i<regs.length;i++){if(qu.indexOf(regs[i])>=0)return{variant:FLEET[regs[i]],reg:regs[i]}}
+  for(var j=0;j<regs.length;j++){var s=regs[j].replace('C-','');if(s.length>=4&&qu.indexOf(s)>=0)return{variant:FLEET[regs[j]],reg:regs[j]}}
+  if(/\bneo\b/i.test(q)||/\bpw1100/i.test(q)||/\bleap.?1a/i.test(q))return{variant:'NEO',reg:null};
+  if(/\bceo\b/i.test(q)||/\bcfm.?56/i.test(q)||/\bv2500/i.test(q)||/\biae\b/i.test(q))return{variant:'CEO',reg:null};
+  return{variant:null,reg:null};
+}
 
-// Detect variant from query — checks for registration, "neo", "ceo", or engine type
-function detectVariant(q) {
-  var qu = q.toUpperCase().replace(/[^A-Z0-9\- ]/g,' ');
-  // Check for full registration
-  var regs = Object.keys(FLEET);
-  for (var i = 0; i < regs.length; i++) {
-    if (qu.indexOf(regs[i]) >= 0) return { variant: FLEET[regs[i]], reg: regs[i] };
+// ══════════════════════════════════════
+//  AUTO-DETECT SECTION FROM TEXT
+// ══════════════════════════════════════
+var SECTION_PATTERNS = [
+  // Limitations
+  {rx:/\b(engine.{0,10}oil|oil.{0,10}quantity|oil.{0,10}press|oil.{0,10}temp)/i, tag:'LIM-ENG-OIL'},
+  {rx:/\b(engine.{0,5}limit|eng.{0,5}limit|n1.{0,5}limit|egt.{0,5}limit|engine.{0,5}start.{0,5}limit)/i, tag:'LIM-ENG'},
+  {rx:/\b(fuel.{0,10}limit|fuel.{0,10}capacity|fuel.{0,10}quantity|fuel.{0,10}temp|fuel.{0,10}imbalance)/i, tag:'LIM-FUEL'},
+  {rx:/\b(tire.{0,5}speed|tire.{0,5}limit|tire.{0,5}press|wheel.{0,5}speed|ground.{0,5}speed.{0,5}limit)/i, tag:'LIM-LDG-GEAR'},
+  {rx:/\b(landing.{0,5}gear.{0,5}limit|gear.{0,5}retract|gear.{0,5}extend|vle|vlo)/i, tag:'LIM-LDG-GEAR'},
+  {rx:/\b(brake.{0,5}temp|brake.{0,5}limit|brake.{0,5}fan)/i, tag:'LIM-LDG-GEAR'},
+  {rx:/\b(flap.{0,5}limit|flap.{0,5}speed|slat.{0,5}speed|vfe|conf.{0,5}speed)/i, tag:'LIM-FLAP-SLAT'},
+  {rx:/\b(max.{0,5}speed|vmo|mmo|max.{0,5}operating|speed.{0,5}limit|overspeed)/i, tag:'LIM-SPD'},
+  {rx:/\b(max.{0,5}altitude|ceiling|max.{0,5}fl|altitude.{0,5}limit)/i, tag:'LIM-ALT'},
+  {rx:/\b(crosswind|tailwind|headwind|wind.{0,5}limit|max.{0,5}wind)/i, tag:'LIM-WIND'},
+  {rx:/\b(weight.{0,5}limit|mtow|mlw|mzfw|max.{0,10}takeoff.{0,5}weight|max.{0,10}landing.{0,5}weight)/i, tag:'LIM-WEIGHT'},
+  {rx:/\b(apu.{0,5}limit|apu.{0,5}start|apu.{0,5}altitude)/i, tag:'LIM-APU'},
+  {rx:/\b(hydraulic.{0,5}limit|hyd.{0,5}press|hyd.{0,5}quantity)/i, tag:'LIM-HYD'},
+  {rx:/\b(electric.{0,5}limit|battery.{0,5}limit|generator)/i, tag:'LIM-ELEC'},
+  {rx:/\b(cabin.{0,5}press|cabin.{0,5}alt|pressuri[sz]ation.{0,5}limit|diff.{0,5}press)/i, tag:'LIM-PRESS'},
+  {rx:/\b(flight.{0,5}control.{0,5}limit|fctl.{0,5}limit|rudder.{0,5}limit|aileron)/i, tag:'LIM-FCTL'},
+  {rx:/\b(autopilot.{0,5}limit|ap.{0,5}limit|autoland|auto.{0,5}pilot)/i, tag:'LIM-AP'},
+  {rx:/\b(ice.{0,5}protect|anti.{0,5}ice|de.{0,5}ice|icing.{0,5}limit|wai|nai|eai)/i, tag:'LIM-ICE'},
+  {rx:/\b(oxygen.{0,5}limit|crew.{0,5}oxygen|pax.{0,5}oxygen)/i, tag:'LIM-OXY'},
+  {rx:/\blimitation/i, tag:'LIM'},
+
+  // Description / Systems
+  {rx:/\b(air.{0,5}condition|pack|bleed|pneumatic|ata.{0,3}21)\b/i, tag:'DSC-AIR-COND'},
+  {rx:/\b(auto.{0,5}flight|fmgc|fms|autopilot.{0,5}desc|ata.{0,3}22)\b/i, tag:'DSC-AUTO-FLT'},
+  {rx:/\b(communicat|vhf|hf|satcom|acars|ata.{0,3}23)\b/i, tag:'DSC-COMM'},
+  {rx:/\b(electri.{0,10}power|generator|bus|battery|ata.{0,3}24)\b/i, tag:'DSC-ELEC'},
+  {rx:/\b(fire.{0,5}protect|fire.{0,5}detect|fire.{0,5}ext|apu.{0,5}fire|eng.{0,5}fire|ata.{0,3}26)\b/i, tag:'DSC-FIRE'},
+  {rx:/\b(flight.{0,5}control|fctl|elevator|aileron|rudder|spoiler|slat|flap.{0,5}system|ata.{0,3}27)\b/i, tag:'DSC-FCTL'},
+  {rx:/\b(fuel.{0,5}system|fuel.{0,5}tank|fuel.{0,5}pump|refuel|defuel|ata.{0,3}28)\b/i, tag:'DSC-FUEL'},
+  {rx:/\b(hydraulic|hyd.{0,5}system|green|blue|yellow.{0,5}system|ata.{0,3}29)\b/i, tag:'DSC-HYD'},
+  {rx:/\b(ice.{0,10}rain|anti.{0,5}ice.{0,5}system|probe.{0,5}heat|window.{0,5}heat|ata.{0,3}30)\b/i, tag:'DSC-ICE-RAIN'},
+  {rx:/\b(landing.{0,5}gear.{0,5}system|gear.{0,5}desc|nose.{0,5}wheel|main.{0,5}gear|ata.{0,3}32)\b/i, tag:'DSC-LDG-GEAR'},
+  {rx:/\b(light.{0,5}system|exterior.{0,5}light|interior.{0,5}light|strobe|beacon|ata.{0,3}33)\b/i, tag:'DSC-LIGHTS'},
+  {rx:/\b(navigation.{0,5}system|nav.{0,5}system|adiru|gps|ils.{0,5}system|ata.{0,3}34)\b/i, tag:'DSC-NAV'},
+  {rx:/\b(oxygen.{0,5}system|crew.{0,5}oxy|pax.{0,5}oxy|ata.{0,3}35)\b/i, tag:'DSC-OXY'},
+  {rx:/\b(pneumatic.{0,5}system|bleed.{0,5}system|ata.{0,3}36)\b/i, tag:'DSC-PNEU'},
+  {rx:/\b(apu.{0,5}system|apu.{0,5}desc|auxiliary.{0,5}power|ata.{0,3}49)\b/i, tag:'DSC-APU'},
+  {rx:/\b(door.{0,5}system|door.{0,5}desc|cargo.{0,5}door|ata.{0,3}52)\b/i, tag:'DSC-DOORS'},
+  {rx:/\b(engine.{0,5}system|engine.{0,5}desc|power.{0,5}plant|thrust.{0,5}reverser|ata.{0,3}7[0-9])\b/i, tag:'DSC-ENG'},
+  {rx:/\b(engine.{0,5}oil.{0,5}system|oil.{0,5}system|ata.{0,3}79)\b/i, tag:'DSC-ENG-OIL'},
+  {rx:/\b(engine.{0,5}start.{0,5}system|start.{0,5}system|ata.{0,3}80)\b/i, tag:'DSC-ENG-START'},
+  {rx:/\b(ignition|ata.{0,3}74)\b/i, tag:'DSC-ENG-IGN'},
+
+  // Procedures
+  {rx:/\b(normal.{0,5}proc|normal.{0,5}checklist|sop|standard.{0,5}oper)/i, tag:'PRO-NOR'},
+  {rx:/\b(abnormal.{0,5}proc|abnormal|ecam.{0,5}action)/i, tag:'PRO-ABN'},
+  {rx:/\b(emergency.{0,5}proc|emer.{0,5}proc|evacuation|ditching)/i, tag:'PRO-EMER'},
+  {rx:/\b(supplement|supplementary.{0,5}proc)/i, tag:'PRO-SUP'},
+
+  // Performance
+  {rx:/\b(takeoff.{0,5}perf|takeoff.{0,5}dist|v1|vr|v2|flex.{0,5}temp)/i, tag:'PERF-TO'},
+  {rx:/\b(landing.{0,5}perf|landing.{0,5}dist|vref|vapp|approach.{0,5}speed)/i, tag:'PERF-LDG'},
+  {rx:/\b(climb.{0,5}perf|cruise.{0,5}perf|descent.{0,5}perf|fuel.{0,5}burn)/i, tag:'PERF-FLT'},
+];
+
+function detectSection(text, manualType) {
+  var tl = text.toLowerCase();
+  var scores = {};
+
+  for (var i = 0; i < SECTION_PATTERNS.length; i++) {
+    var p = SECTION_PATTERNS[i];
+    var matches = tl.match(new RegExp(p.rx.source, 'gi'));
+    if (matches) {
+      scores[p.tag] = (scores[p.tag] || 0) + matches.length;
+    }
   }
-  // Check without C- prefix
-  for (var j = 0; j < regs.length; j++) {
-    var short = regs[j].replace('C-','');
-    if (qu.indexOf(short) >= 0 && short.length >= 4) return { variant: FLEET[regs[j]], reg: regs[j] };
+
+  // Find best match
+  var best = null, bestScore = 0;
+  Object.keys(scores).forEach(function(tag) {
+    if (scores[tag] > bestScore) { best = tag; bestScore = scores[tag]; }
+  });
+
+  var prefix = (manualType || 'FCOM').toUpperCase();
+
+  if (best) {
+    // If the detected tag already starts with a category that matches the manual type context, use it
+    return prefix + '-' + best;
   }
-  // Check keywords
-  if (/\bneo\b/i.test(q) || /\bpw1100/i.test(q) || /\bleap.?1a/i.test(q)) return { variant: 'NEO', reg: null };
-  if (/\bceo\b/i.test(q) || /\bcfm.?56/i.test(q) || /\bv2500/i.test(q) || /\biae\b/i.test(q)) return { variant: 'CEO', reg: null };
-  return { variant: null, reg: null };
+
+  return prefix;
 }
 
 // ══════════════════════════════════════
 //  ABBREVIATIONS
 // ══════════════════════════════════════
-var ABBR = {
+var ABBR={
   'neo':'new engine option pw1100g','ceo':'current engine option cfm56 v2500',
-  'pw':'pratt whitney','gtf':'geared turbofan','leap':'leading edge aviation propulsion',
   'egt':'exhaust gas temperature','itt':'interstage turbine temperature',
   'n1':'fan speed','n2':'core speed','ff':'fuel flow','epr':'engine pressure ratio',
   'fadec':'full authority digital engine control','toga':'takeoff go around',
   'flex':'flexible takeoff thrust','mct':'maximum continuous thrust',
-  'clb':'climb thrust','rev':'reverse thrust','appr':'approach','ga':'go around',
-  'to':'takeoff','ldg':'landing','thr':'thrust',
-  'vr':'rotation speed','v1':'decision speed','v2':'takeoff safety speed',
-  'vref':'reference landing speed','vapp':'approach speed','vls':'lowest selectable speed',
-  'vfe':'max flap extended speed','vmo':'maximum operating speed','mmo':'maximum mach operating',
-  'vle':'max landing gear extended','vlo':'max landing gear operating',
-  'vs':'stall speed','vs1g':'stall speed 1g',
   'mcdu':'multipurpose control display unit','fcu':'flight control unit',
-  'efis':'electronic flight instrument system','ecam':'electronic centralized aircraft monitor',
-  'fma':'flight mode annunciator','nd':'navigation display','pfd':'primary flight display',
-  'sd':'system display','ewd':'engine warning display',
-  'fmgc':'flight management guidance computer','fms':'flight management system',
-  'ap':'autopilot','fd':'flight director','athr':'autothrust',
-  'ils':'instrument landing system','vor':'vhf omnidirectional range',
-  'rnav':'area navigation','gnss':'global navigation satellite system',
-  'loc':'localizer','gs':'glideslope','da':'decision altitude','dh':'decision height',
-  'mda':'minimum descent altitude',
-  'rwy':'runway','twy':'taxiway','tora':'takeoff run available',
-  'toda':'takeoff distance available','asda':'accelerate stop distance available',
-  'lda':'landing distance available',
+  'ecam':'electronic centralized aircraft monitor','fma':'flight mode annunciator',
+  'fmgc':'flight management guidance computer','ap':'autopilot','athr':'autothrust',
+  'ils':'instrument landing system','rnav':'area navigation',
+  'da':'decision altitude','dh':'decision height','mda':'minimum descent altitude',
   'oat':'outside air temperature','isa':'international standard atmosphere',
-  'qnh':'altimeter setting','fl':'flight level',
   'mtow':'maximum takeoff weight','mlw':'maximum landing weight',
-  'mzfw':'maximum zero fuel weight','mfw':'maximum fuel weight',
-  'oew':'operating empty weight','dow':'dry operating weight',
-  'zfw':'zero fuel weight','tow':'takeoff weight','lw':'landing weight',
-  'cg':'center of gravity','mac':'mean aerodynamic chord',
-  'apu':'auxiliary power unit','adiru':'air data inertial reference unit',
-  'ra':'radio altimeter','tcas':'traffic collision avoidance system',
+  'mzfw':'maximum zero fuel weight','zfw':'zero fuel weight',
+  'cg':'center of gravity','apu':'auxiliary power unit',
+  'adiru':'air data inertial reference unit','tcas':'traffic collision avoidance system',
   'gpws':'ground proximity warning system','egpws':'enhanced gpws',
-  'taws':'terrain awareness warning system',
-  'elac':'elevator aileron computer','sec':'spoiler elevator computer',
-  'fac':'flight augmentation computer',
-  'pf':'pilot flying','pm':'pilot monitoring','cpt':'captain','fo':'first officer',
+  'pf':'pilot flying','pm':'pilot monitoring',
   'sop':'standard operating procedure','qrh':'quick reference handbook',
-  'mel':'minimum equipment list','ddg':'dispatch deviation guide',
-  'cdl':'configuration deviation list','oooi':'out off on in',
-  'eta':'estimated time arrival','utc':'coordinated universal time',
-  'rvsm':'reduced vertical separation minimum','etops':'extended operations',
-  'edto':'extended diversion time operations',
-  'rnp':'required navigation performance','lvp':'low visibility procedures',
-  'xwind':'crosswind','hdg':'heading','trk':'track','alt':'altitude','spd':'speed',
-  'cas':'calibrated airspeed','tas':'true airspeed',
-  'hyd':'hydraulic','elec':'electrical','pax':'passenger','fwd':'forward','aft':'aft',
-  'eng':'engine','sys':'system','qty':'quantity','acft':'aircraft',
-  'lim':'limitations','dsc':'description','pro':'procedure','nor':'normal','abn':'abnormal',
-  'perf':'performance','wt':'weight','bal':'balance',
+  'mel':'minimum equipment list','xwind':'crosswind',
+  'hyd':'hydraulic','elec':'electrical','eng':'engine','qty':'quantity',
+  'lim':'limitations','dsc':'description','pro':'procedure',
   'wai':'wing anti ice','nai':'nacelle anti ice','eai':'engine anti ice',
-  'fctl':'flight controls','rud':'rudder','ail':'aileron','elev':'elevator',
-  'oil':'oil','fuel':'fuel','start':'start','crank':'crank'
+  'fctl':'flight controls','oil':'oil','fuel':'fuel','ldg':'landing',
+  'vr':'rotation speed','v1':'decision speed','v2':'takeoff safety speed',
+  'vref':'reference landing speed','vapp':'approach speed',
+  'vfe':'max flap extended speed','vmo':'maximum operating speed','mmo':'max mach operating',
+  'vle':'max landing gear extended','vlo':'max landing gear operating',
+  'acft':'aircraft','pax':'passenger','brk':'brake'
 };
-
-function expandQuery(q) {
-  var words = q.toLowerCase().split(/\s+/);
-  var out = [];
-  for (var i = 0; i < words.length; i++) {
-    var w = words[i].replace(/[^a-z0-9\/]/g, '');
-    out.push(w);
-    if (ABBR[w]) { ABBR[w].split(' ').forEach(function(p) { out.push(p) }); }
-  }
+function expandQuery(q){
+  var words=q.toLowerCase().split(/\s+/),out=[];
+  for(var i=0;i<words.length;i++){var w=words[i].replace(/[^a-z0-9\/]/g,'');out.push(w);if(ABBR[w])ABBR[w].split(' ').forEach(function(p){out.push(p)})}
   return out.join(' ');
 }
 
 // ══════════════════════════════════════
-//  SMART ROUTING (manual type)
+//  SMART ROUTING
 // ══════════════════════════════════════
-var R_FCOM = ['limitation','limit','max','min','maximum','minimum','speed','weight','altitude','ceiling','vmo','mmo','mtow','mlw','mzfw','vfe','vle','vlo','temperature','egt','oil','fuel capacity','prohibited','restriction','crosswind limit','tailwind','flap speed','placard','system description','description','dsc','lim','quantity','pressure','level'];
-var R_FCTM = ['technique','how to','handling','approach technique','landing technique','takeoff technique','tips','recommended','fly','flare','touchdown','de-crab','weather','gusty','turbulence','windshear','rejected','overweight','manual flying','raw data','visual approach','circling','steep approach','contaminated','slippery','wet runway','icing','fctm','when to','should i'];
-var R_MANOPS = ['duty','rest','crew','regulation','company','policy','ops','dispatch','mel','ddg','cdl','minimum equipment','fatigue','scheduling','flight time','block time','ops man','manops','comp time','reserve','standby','airport brief','minima','company minima','cat ii','cat iii','lvp','rvsm','etops','edto','dangerous goods','security','emergency equipment','cabin','pax','deviation','diversion'];
-
-function detectRoute(q) {
-  var ql = q.toLowerCase();
-  var sc = {FCOM:0,FCTM:0,MANOPS:0};
-  R_FCOM.forEach(function(k) { if (ql.indexOf(k)>=0) sc.FCOM += k.split(' ').length; });
-  R_FCTM.forEach(function(k) { if (ql.indexOf(k)>=0) sc.FCTM += k.split(' ').length; });
-  R_MANOPS.forEach(function(k) { if (ql.indexOf(k)>=0) sc.MANOPS += k.split(' ').length; });
-  var best='ALL',bs=0;
-  ['FCOM','FCTM','MANOPS'].forEach(function(k) { if (sc[k]>bs) { best=k;bs=sc[k]; } });
+var R_FCOM=['limitation','limit','max','min','maximum','minimum','speed','weight','altitude','ceiling','vmo','mmo','mtow','mlw','mzfw','vfe','vle','vlo','temperature','egt','oil','fuel capacity','prohibited','restriction','crosswind limit','tailwind','flap speed','placard','system description','description','dsc','lim','quantity','pressure','level','tire'];
+var R_FCTM=['technique','how to','handling','approach technique','landing technique','takeoff technique','tips','recommended','fly','flare','touchdown','de-crab','gusty','turbulence','windshear','rejected','overweight','manual flying','raw data','visual approach','circling','steep approach','contaminated','slippery','wet runway','icing','fctm','when to','should i'];
+var R_MANOPS=['duty','rest','crew','regulation','company','policy','ops','dispatch','mel','ddg','cdl','minimum equipment','fatigue','scheduling','flight time','block time','manops','comp time','reserve','standby','airport brief','minima','company minima','cat ii','cat iii','lvp','rvsm','etops','edto','dangerous goods','diversion'];
+function detectRoute(q){
+  var ql=q.toLowerCase(),sc={FCOM:0,FCTM:0,MANOPS:0};
+  R_FCOM.forEach(function(k){if(ql.indexOf(k)>=0)sc.FCOM+=k.split(' ').length});
+  R_FCTM.forEach(function(k){if(ql.indexOf(k)>=0)sc.FCTM+=k.split(' ').length});
+  R_MANOPS.forEach(function(k){if(ql.indexOf(k)>=0)sc.MANOPS+=k.split(' ').length});
+  var best='ALL',bs=0;['FCOM','FCTM','MANOPS'].forEach(function(k){if(sc[k]>bs){best=k;bs=sc[k]}});
   return bs===0?'ALL':best;
 }
 
 // ══════════════════════════════════════
 //  DB
 // ══════════════════════════════════════
-var DB='a321ref',DBV=6;
+var DB='a321ref',DBV=7;
 function openDB(){return new Promise(function(ok,no){var r=indexedDB.open(DB,DBV);r.onupgradeneeded=function(){var d=r.result;['manuals','chunks','config'].forEach(function(s){if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:s==='config'?'key':'id'})})};r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})}
 function dbPut(s,d){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readwrite');tx.objectStore(s).put(d);tx.oncomplete=ok;tx.onerror=function(){no(tx.error)}})})}
 function dbGetAll(s){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readonly');var r=tx.objectStore(s).getAll();r.onsuccess=function(){ok(r.result)};r.onerror=function(){no(r.error)}})})}
@@ -328,7 +359,7 @@ function dbDelete(s,k){return openDB().then(function(db){return new Promise(func
 function dbClear(s){return openDB().then(function(db){return new Promise(function(ok,no){var tx=db.transaction(s,'readwrite');tx.objectStore(s).clear();tx.oncomplete=ok;tx.onerror=function(){no(tx.error)}})})}
 
 // ══════════════════════════════════════
-//  BM25 — now filters by manual type AND variant
+//  BM25
 // ══════════════════════════════════════
 function BM25(k1,b){this.k1=k1||1.5;this.b=b||0.75;this.docs=[];this.avgdl=0;this.idf={};this.df={};this.tfs=[];this.dls=[]}
 BM25.prototype.tok=function(t){return t.toLowerCase().replace(/[^a-z0-9\s.\/-]/g,' ').split(/\s+/).filter(function(w){return w.length>1})};
@@ -343,10 +374,8 @@ BM25.prototype.search=function(q,topK,filterManual,filterVariant){
   topK=topK||5;var qt=this.tok(q),scores=[],self=this;
   for(var i=0;i<this.docs.length;i++){
     var d=this.docs[i];
-    // Filter by manual type
-    if(filterManual&&filterManual!=='ALL'){ if((d.ref||'').toUpperCase().indexOf(filterManual)!==0) continue; }
-    // Filter by variant: show matching variant OR common
-    if(filterVariant){ var dv=(d.variant||'COMMON').toUpperCase(); if(dv!=='COMMON'&&dv!==filterVariant) continue; }
+    if(filterManual&&filterManual!=='ALL'){if((d.ref||'').toUpperCase().indexOf(filterManual)!==0)continue}
+    if(filterVariant){var dv=(d.variant||'COMMON').toUpperCase();if(dv!=='COMMON'&&dv!==filterVariant)continue}
     var s=0,dl=this.dls[i],tf=this.tfs[i];
     for(var j=0;j<qt.length;j++){var t=qt[j];if(!self.idf[t])continue;var f=tf[t]||0;s+=self.idf[t]*(f*(self.k1+1))/(f+self.k1*(1-self.b+self.b*dl/self.avgdl))}
     if(s>0)scores.push({i:i,s:s});
@@ -358,7 +387,7 @@ BM25.prototype.search=function(q,topK,filterManual,filterVariant){
 // ══════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════
-var engine=null,bm25=new BM25(),allChunks=[],manuals=[],mode='ai',isGenerating=false;
+var engine=null,bm25=new BM25(),allChunks=[],manuals=[],isGenerating=false;
 var selectedModel='Qwen2.5-3B-Instruct-q4f16_1-MLC',selectedType='FCOM',selectedVar='COMMON';
 var MODELS=[
   {id:'Qwen2.5-3B-Instruct-q4f16_1-MLC',name:'Qwen 2.5 3B',desc:'Best for technical content. ~1.8 GB.',rec:true},
@@ -368,18 +397,19 @@ var MODELS=[
 ];
 var $=function(id){return document.getElementById(id)};
 function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
-function buildRef(type,section){var r=(type||'FCOM').toUpperCase();if(section&&section.trim())r+='-'+section.trim().toUpperCase().replace(/\s+/g,'-');return r}
-function updateRefPreview(){$('refPreview').textContent=buildRef(selectedType,$('sectionTag').value)}
 
 // ══════════════════════════════════════
-//  CHUNKING — now carries variant tag
+//  CHUNKING — auto-detects section ref
 // ══════════════════════════════════════
-function chunkText(text,ref,page,variant){
+function chunkText(text,manualType,variant){
   var words=text.split(/\s+/).filter(function(w){return w.length>0});
   var chunks=[],sz=400,ol=50;
   for(var i=0;i<words.length;i+=sz-ol){
     var c=words.slice(i,i+sz).join(' ');
-    if(c.trim().length>30)chunks.push({text:c,ref:ref,variant:variant||'COMMON',page:page,id:ref+'_'+variant+'_p'+page+'_'+i+'_'+Date.now()+Math.random()});
+    if(c.trim().length>30){
+      var ref=detectSection(c,manualType);
+      chunks.push({text:c,ref:ref,variant:variant||'COMMON',id:ref+'_'+variant+'_'+i+'_'+Date.now()+Math.random()});
+    }
   }
   return chunks;
 }
@@ -431,19 +461,37 @@ function extractPDF(file,onProg){
 }
 
 // ══════════════════════════════════════
-//  IMPORT — now stores variant
+//  IMPORT
 // ══════════════════════════════════════
-function importManual(ref,variant,pages,totalPages){
-  var manualId=ref.toLowerCase().replace(/[^a-z0-9]/g,'_')+'_'+variant.toLowerCase()+'_'+Date.now();
-  var chunks=[];
-  for(var i=0;i<pages.length;i++){var c=chunkText(pages[i].text,ref,pages[i].page,variant);for(var j=0;j<c.length;j++)chunks.push(c[j])}
-  var manual={id:manualId,ref:ref,variant:variant,totalPages:totalPages,extractedPages:pages.length,chunkCount:chunks.length,importedAt:new Date().toISOString()};
-  return dbPut('manuals',manual).then(function(){
-    var p=Promise.resolve();
-    chunks.forEach(function(ch){ch.manualId=manualId;p=p.then(function(){return dbPut('chunks',ch)})});
-    return p.then(function(){return manual});
+function importManual(manualType,variant,pages,totalPages){
+  var allNewChunks=[];
+  for(var i=0;i<pages.length;i++){
+    var c=chunkText(pages[i].text,manualType,variant);
+    for(var j=0;j<c.length;j++)allNewChunks.push(c[j]);
+  }
+  // Group chunks by detected ref for manual entries
+  var byRef={};
+  allNewChunks.forEach(function(ch){if(!byRef[ch.ref])byRef[ch.ref]=[];byRef[ch.ref].push(ch)});
+
+  var manualEntries=[];
+  Object.keys(byRef).forEach(function(ref){
+    manualEntries.push({
+      id:ref.toLowerCase().replace(/[^a-z0-9]/g,'_')+'_'+variant.toLowerCase()+'_'+Date.now()+Math.random(),
+      ref:ref,variant:variant,totalPages:totalPages,
+      extractedPages:pages.length,chunkCount:byRef[ref].length,
+      importedAt:new Date().toISOString()
+    });
   });
+
+  var p=Promise.resolve();
+  manualEntries.forEach(function(m){p=p.then(function(){return dbPut('manuals',m)})});
+  allNewChunks.forEach(function(ch){
+    ch.manualId=ch.ref.toLowerCase().replace(/[^a-z0-9]/g,'_')+'_'+variant.toLowerCase();
+    p=p.then(function(){return dbPut('chunks',ch)});
+  });
+  return p.then(function(){return{sections:manualEntries.length,chunks:allNewChunks.length,refs:Object.keys(byRef)}});
 }
+
 function rebuildIndex(){
   return dbGetAll('chunks').then(function(c){allChunks=c;return dbGetAll('manuals')}).then(function(m){
     manuals=m;bm25.build(allChunks);updateStatus();updateSteps();renderManuals();
@@ -456,8 +504,8 @@ function rebuildIndex(){
 function updateStatus(){
   var has=manuals.length>0;
   if(!has){$('statusDot').className='status-dot red';$('statusText').textContent='No manuals loaded'}
-  else if(engine){$('statusDot').className='status-dot green';$('statusText').textContent='Ready · '+allChunks.length+' chunks · '+manuals.length+' section'+(manuals.length>1?'s':'')}
-  else{$('statusDot').className='status-dot amber';$('statusText').textContent=allChunks.length+' chunks · Tap 🤖 to download AI model'}
+  else if(engine){$('statusDot').className='status-dot green';$('statusText').textContent='Ready · '+allChunks.length+' chunks · '+manuals.length+' sections'}
+  else{$('statusDot').className='status-dot amber';$('statusText').textContent=allChunks.length+' chunks · Tap 🤖 to download AI'}
   $('sendBtn').disabled=!has||isGenerating;
 }
 function updateSteps(){
@@ -471,7 +519,7 @@ function renderManuals(){
   manuals.forEach(function(m){
     var vc=m.variant==='NEO'?'neo':m.variant==='CEO'?'ceo':'common';
     var div=document.createElement('div');div.className='manual-item';
-    div.innerHTML='<div class="manual-item-info"><div class="manual-item-name">'+esc(m.ref)+' <span class="manual-item-var '+vc+'">'+m.variant+'</span></div><div class="manual-item-meta">'+m.chunkCount+' chunks · '+m.extractedPages+'/'+m.totalPages+' pg</div></div><button class="manual-item-del" data-id="'+m.id+'">✕</button>';
+    div.innerHTML='<div class="manual-item-info"><div class="manual-item-name">'+esc(m.ref)+' <span class="manual-item-var '+vc+'">'+m.variant+'</span></div><div class="manual-item-meta">'+m.chunkCount+' chunks</div></div><button class="manual-item-del" data-id="'+m.id+'">✕</button>';
     list.appendChild(div);
   });
   list.querySelectorAll('.manual-item-del').forEach(function(btn){
@@ -494,15 +542,13 @@ function renderModels(){
 }
 
 // ══════════════════════════════════════
-//  MESSAGES — refs show section tag, no page
+//  MESSAGES
 // ══════════════════════════════════════
 function addMsg(html,role,refs){
-  refs=refs||[];
-  $('welcome').style.display='none';
+  refs=refs||[];$('welcome').style.display='none';
   var div=document.createElement('div');div.className='msg '+role;
   var h='<div class="msg-bubble">'+html+'</div>';
   if(refs.length){
-    // Dedupe refs by ref tag
     var seen={},unique=[];
     refs.forEach(function(r){if(!seen[r.ref]){seen[r.ref]=1;unique.push(r)}});
     h+='<div class="msg-refs">';
@@ -518,7 +564,7 @@ function addTyping(){var d=document.createElement('div');d.className='msg ai';d.
 function rmTyping(){var e=$('typing');if(e)e.remove()}
 
 // ══════════════════════════════════════
-//  QUERY HANDLER
+//  QUERY
 // ══════════════════════════════════════
 function handleQuery(q){
   if(!q.trim()||isGenerating)return;
@@ -526,55 +572,40 @@ function handleQuery(q){
   addMsg(esc(q),'user');
   $('inputField').value='';autoResize();
 
-  // Detect variant from registration or keywords
-  var vd = detectVariant(q);
-  var variant = vd.variant; // 'NEO', 'CEO', or null
+  var vd=detectVariant(q),variant=vd.variant;
+  var route=detectRoute(q);
 
-  // Smart routing to manual type
-  var route = detectRoute(q);
+  var badges='';
+  var rc=route==='FCOM'?'route-fcom':route==='FCTM'?'route-fctm':route==='MANOPS'?'route-manops':'route-all';
+  badges+='<span class="route-badge '+rc+'">'+(route==='ALL'?'All':route)+'</span>';
+  if(variant)badges+='<span class="route-badge route-'+variant.toLowerCase()+'">'+variant+(vd.reg?' · '+vd.reg:'')+'</span>';
+  badges+='\n\n';
 
-  // Build badges
-  var badges = '';
-  var rc = route==='FCOM'?'route-fcom':route==='FCTM'?'route-fctm':route==='MANOPS'?'route-manops':'route-all';
-  badges += '<span class="route-badge '+rc+'">'+(route==='ALL'?'All manuals':route)+'</span>';
-  if(variant){
-    badges += '<span class="route-badge route-'+(variant.toLowerCase())+'">'+variant+(vd.reg?' · '+vd.reg:'')+'</span>';
-  }
-  badges += '\n\n';
-
-  // Expand abbreviations
-  var expandedQ = expandQuery(q);
-
-  // Search with filters
-  var results = bm25.search(expandedQ, 8, route, variant);
-
-  // Fallback: try without route filter
-  if(!results.length && route!=='ALL'){results=bm25.search(expandedQ,8,'ALL',variant)}
-  // Fallback: try without variant filter
-  if(!results.length && variant){results=bm25.search(expandedQ,8,route,null)}
-  // Final fallback: no filters
-  if(!results.length){results=bm25.search(expandedQ,8,'ALL',null)}
+  var expandedQ=expandQuery(q);
+  var results=bm25.search(expandedQ,8,route,variant);
+  if(!results.length&&route!=='ALL')results=bm25.search(expandedQ,8,'ALL',variant);
+  if(!results.length&&variant)results=bm25.search(expandedQ,8,route,null);
+  if(!results.length)results=bm25.search(expandedQ,8,'ALL',null);
 
   if(!results.length){
-    addMsg("I couldn't find anything matching that. Check that the relevant section is imported.",'ai');
+    addMsg("Nothing found. Make sure the relevant section is imported.",'ai');
     isGenerating=false;updateStatus();return;
   }
-
   if(!engine){
-    addMsg("You need to download the AI model first. Tap 🤖 to get started — one-time download.",'ai');
+    addMsg("Download the AI model first — tap 🤖. One-time download.",'ai');
     isGenerating=false;updateStatus();return;
   }
 
   addTyping();
   var ctx=results.slice(0,4).map(function(r){return'['+r.ref+(r.variant&&r.variant!=='COMMON'?' ('+r.variant+')':'')+']\n'+r.text}).join('\n\n');
-  var varNote = variant ? '\nThe pilot is asking about a ' + variant + ' variant.' : '';
-  var prompt='You are an A321 pilot reference AI. Answer like a knowledgeable captain — natural, concise, precise. Rules:\n'
+  var varNote=variant?'\nThe pilot is asking about a '+variant+' variant.':'';
+  var prompt='You are an A321 pilot reference AI. Answer like a knowledgeable captain — natural, concise, precise.\n'
     +'- Use ONLY the provided excerpts\n'
-    +'- Direct answer first, then details if needed\n'
+    +'- Direct answer first\n'
     +'- Include exact numbers/values\n'
-    +'- End with the reference in parentheses, e.g. (FCOM-LIM-ENG-OIL)\n'
+    +'- End with the reference tag in parentheses exactly as shown in the excerpt headers, e.g. (FCOM-LIM-ENG-OIL)\n'
     +'- If not in excerpts: "I don\'t have that section loaded"\n'
-    +'- No filler, no preamble\n'
+    +'- No filler\n'
     +varNote+'\n\nEXCERPTS:\n'+ctx+'\n\nQ: '+q+'\n\nA:';
 
   engine.chat.completions.create({messages:[{role:'user',content:prompt}],max_tokens:400,temperature:0.1}).then(function(reply){
@@ -604,22 +635,16 @@ $('btnModel').onclick=function(){renderModels();$('modelPanel').classList.add('o
 $('closeModelPanel').onclick=function(){$('modelPanel').classList.remove('open')};
 $('modelPanel').onclick=function(e){if(e.target===$('modelPanel'))$('modelPanel').classList.remove('open')};
 
-// Type selector
 document.querySelectorAll('.type-btn').forEach(function(btn){
-  btn.onclick=function(){document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('sel')});btn.classList.add('sel');selectedType=btn.dataset.type;updateRefPreview()};
+  btn.onclick=function(){document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('sel')});btn.classList.add('sel');selectedType=btn.dataset.type};
 });
-// Variant selector
 document.querySelectorAll('.var-btn').forEach(function(btn){
   btn.onclick=function(){document.querySelectorAll('.var-btn').forEach(function(b){b.classList.remove('sel')});btn.classList.add('sel');selectedVar=btn.dataset.var};
 });
-$('sectionTag').addEventListener('input',updateRefPreview);
 
-// File import
 $('fileDrop').onclick=function(){$('fileInput').click()};
 $('fileInput').addEventListener('change',function(e){
   var files=e.target.files;
-  var ref=buildRef(selectedType,$('sectionTag').value);
-  var variant=selectedVar;
   var proc=function(idx){
     if(idx>=files.length){rebuildIndex();$('fileInput').value='';return}
     var file=files[idx],fname=file.name;
@@ -628,22 +653,22 @@ $('fileInput').addEventListener('change',function(e){
       file.text().then(function(t){
         var data=JSON.parse(t);
         var pages=data.pages||[{page:1,text:typeof data==='string'?data:JSON.stringify(data)}];
-        return importManual(ref,variant,pages,data.total_pages||1);
-      }).then(function(m){
-        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+' ['+m.variant+']: '+m.chunkCount+' chunks</p>';
+        return importManual(selectedType,selectedVar,pages,data.total_pages||1);
+      }).then(function(r){
+        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+r.sections+' sections detected, '+r.chunks+' chunks<br><span style="font-size:11px;color:var(--muted)">'+r.refs.join(', ')+'</span></p>';
         $('ocrStatus').textContent='';proc(idx+1);
       }).catch(function(err){$('importStatus').innerHTML='<p style="color:var(--red)">❌ '+err.message+'</p>';proc(idx+1)});
     } else if(fname.endsWith('.txt')){
-      file.text().then(function(t){return importManual(ref,variant,[{page:1,text:t}],1)}).then(function(m){
-        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+' ['+m.variant+']: '+m.chunkCount+' chunks</p>';proc(idx+1);
+      file.text().then(function(t){return importManual(selectedType,selectedVar,[{page:1,text:t}],1)}).then(function(r){
+        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+r.sections+' sections, '+r.chunks+' chunks</p>';proc(idx+1);
       });
     } else if(fname.endsWith('.pdf')){
       $('ocrProgress').style.display='block';$('ocrStatus').textContent='Processing '+fname+'...';
       extractPDF(file,function(cur,tot,msg){
         $('ocrProgressFill').style.width=Math.round(cur/tot*100)+'%';
         $('ocrStatus').textContent=fname+': '+msg+' ('+cur+'/'+tot+')';
-      }).then(function(r){return importManual(ref,variant,r.pages,r.total)}).then(function(m){
-        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+' ['+m.variant+']: '+m.chunkCount+' chunks</p>';
+      }).then(function(r){return importManual(selectedType,selectedVar,r.pages,r.total)}).then(function(r){
+        $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+r.sections+' sections detected, '+r.chunks+' chunks<br><span style="font-size:11px;color:var(--muted)">'+r.refs.join(', ')+'</span></p>';
         $('ocrProgress').style.display='none';$('ocrStatus').textContent='';proc(idx+1);
       }).catch(function(err){
         $('importStatus').innerHTML='<p style="color:var(--red)">❌ '+fname+': '+err.message+'</p>';
@@ -656,10 +681,9 @@ $('fileInput').addEventListener('change',function(e){
 
 $('pasteImport').onclick=function(){
   var text=$('pasteArea').value.trim();if(!text)return;
-  var ref=buildRef(selectedType,$('sectionTag').value);
-  importManual(ref,selectedVar,[{page:1,text:text}],1).then(function(m){
+  importManual(selectedType,selectedVar,[{page:1,text:text}],1).then(function(r){
     $('pasteArea').value='';
-    $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+esc(m.ref)+' ['+m.variant+']: '+m.chunkCount+' chunks</p>';
+    $('importStatus').innerHTML='<p style="color:var(--accent)">✅ '+r.sections+' sections, '+r.chunks+' chunks</p>';
     rebuildIndex();
   });
 };
@@ -684,9 +708,7 @@ $('btnLoadModel').onclick=function(){
 };
 
 // Init
-rebuildIndex().then(function(){return dbGet('config','mode')}).then(function(){
-  updateStatus();updateSteps();renderModels();updateRefPreview();
-});
+rebuildIndex().then(function(){updateStatus();updateSteps();renderModels()});
 
 });
 </script>
